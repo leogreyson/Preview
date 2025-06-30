@@ -151,12 +151,12 @@ export default function Home() {
                 }}
               >
                 <Image
-                  src="/vectors/astra.png"
+                  src="/vectors/Astra.png"
                   alt="Astra Invite Logo"
                   width="120px"
                   height="120px"
                   objectFit="contain"
-                  fallbackSrc="/next.svg"
+                  fallbackSrc="/vectors/Astra.png"
                   filter="drop-shadow(0 10px 30px rgba(139, 92, 246, 0.2))"
                 />
               </Box>
