@@ -122,13 +122,13 @@ export default function Home() {
     mx="auto"
   >
     <Image
-      src="/vectors/astra.png"
+      src="/vectors/Astra.png"
       alt="Astra Invite Logo"
       w="100%"
       h="100%"
       objectFit="cover"
       borderRadius="full" // for perfect circle crop
-      fallbackSrc="/vectors/astra.png"
+      fallbackSrc="/vectors/Astra.png"
       filter="drop-shadow(0 4px 20px rgba(196, 166, 106, 0.3))"
       // Optionally: remove "maxW" and "height" props!
     />
