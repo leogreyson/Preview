@@ -1,92 +1,194 @@
 @import "tailwindcss";
 
+/* AKbalthom Freehand */
 @font-face {
   font-family: 'AKbalthom Freehand';
-  src: url('/fonts/AKbalthom Freehand [Version 1.50] 082014.ttf') format('truetype');
+  src: url('/fonts/AKbalthomFreehand.woff2') format('woff2'),
+       url('/fonts/AKbalthomFreehand.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
-@font-face {
-  font-family: 'Bayon';
-  src: url('/fonts/Bayon.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Hanuman';
-  src: url('/fonts/Hanuman.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Kantumruy';
-  src: url('/fonts/Kantumruy-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Khmer OS Siemreap';
-  src: url('/fonts/KhmerOSsiemreap.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Moul';
-  src: url('/fonts/Moul.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Moulpali';
-  src: url('/fonts/Moulpali.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'M1';
-  src: url('/fonts/m1.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'M2';
-  src: url('/fonts/M2.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
+/* Battambang Regular + Bold */
 @font-face {
   font-family: 'Battambang';
-  src: url('/fonts/Battambang-Regular.ttf') format('truetype');
+  src: url('/fonts/Battambang.woff2') format('woff2'),
+       url('/fonts/Battambang.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Battambang';
+  src: url('/fonts/Battambang-Bold.woff2') format('woff2'),
+       url('/fonts/Battambang-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
+/* Bayon */
+@font-face {
+  font-family: 'Bayon';
+  src: url('/fonts/Bayon.woff2') format('woff2'),
+       url('/fonts/Bayon.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Content */
 @font-face {
   font-family: 'Content';
-  src: url('/fonts/Content-Regular.ttf') format('truetype');
+  src: url('/fonts/Content.woff2') format('woff2'),
+       url('/fonts/Content.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
+/* Dangrek */
 @font-face {
   font-family: 'Dangrek';
-  src: url('/fonts/Dangrek.ttf') format('truetype');
+  src: url('/fonts/Dangrek.woff2') format('woff2'),
+       url('/fonts/Dangrek.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
+/* Hanuman Regular + Bold */
 @font-face {
-  font-family: 'Koulen';
-  src: url('/fonts/Koulen.ttf') format('truetype');
+  font-family: 'Hanuman';
+  src: url('/fonts/Hanuman.woff2') format('woff2'),
+       url('/fonts/Hanuman.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Hanuman';
+  src: url('/fonts/Hanuman-Bold.woff2') format('woff2'),
+       url('/fonts/Hanuman-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Kantumruy Regular, Bold, Light */
+@font-face {
+  font-family: 'Kantumruy';
+  src: url('/fonts/Kantumruy.woff2') format('woff2'),
+       url('/fonts/Kantumruy.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kantumruy';
+  src: url('/fonts/Kantumruy-Bold.woff2') format('woff2'),
+       url('/fonts/Kantumruy-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Kantumruy Light';
+  src: url('/fonts/KantumruyLight.woff2') format('woff2'),
+       url('/fonts/KantumruyLight.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Khmer OS Siemreap */
+@font-face {
+  font-family: 'Khmer OS Siemreap';
+  src: url('/fonts/KhmerOSsiemreap.woff2') format('woff2'),
+       url('/fonts/KhmerOSsiemreap.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Khmer Moul */
+@font-face {
+  font-family: 'KhmerMoul';
+  src: url('/fonts/KhmerMoul.woff2') format('woff2'),
+       url('/fonts/KhmerMoul.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* KhmM1 */
+@font-face {
+  font-family: 'KhmM1';
+  src: url('/fonts/KhmM1.woff2') format('woff2'),
+       url('/fonts/KhmM1.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+/* KhmM2 */
+@font-face {
+  font-family: 'KhmM2';
+  src: url('/fonts/KhmM2.woff2') format('woff2'),
+       url('/fonts/KhmM2.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Koulen */
+@font-face {
+  font-family: 'Koulen';
+  src: url('/fonts/Koulen.woff2') format('woff2'),
+       url('/fonts/Koulen.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Moul */
+@font-face {
+  font-family: 'Moul';
+  src: url('/fonts/Moul.woff2') format('woff2'),
+       url('/fonts/Moul.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* MoulPali */
+@font-face {
+  font-family: 'MoulPali';
+  src: url('/fonts/MoulPali.woff2') format('woff2'),
+       url('/fonts/MoulPali.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* M1 */
+@font-face {
+  font-family: 'M1';
+  src: url('/fonts/M1.woff2') format('woff2'),
+       url('/fonts/M1.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* M2 */
+@font-face {
+  font-family: 'M2';
+  src: url('/fonts/M2.woff2') format('woff2'),
+       url('/fonts/M2.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 :root {
@@ -111,5 +213,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Battambang', 'Noto Sans Khmer', 'Hanuman', 'Moul', Arial, Helvetica, sans-serif;
 }
