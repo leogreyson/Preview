@@ -11,33 +11,41 @@ import {
   VStack,
   Container,
   Image,
-  Flex,
-  Icon,
   Grid,
   GridItem,
   Badge,
 } from '@chakra-ui/react';
-import { keyframes } from '@emotion/react'; // Import keyframes from emotion
+import { keyframes } from '@emotion/react';
 
-// Enhanced animations
+// Modern animations
 const floatAnimation = keyframes`
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(1deg); }
+  50% { transform: translateY(-15px) rotate(2deg); }
 `;
 
-const shimmerAnimation = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+const waveAnimation = keyframes`
+  0%, 100% { 
+    transform: translateX(-50%) translateY(0px) rotate(0deg); 
+  }
+  50% { 
+    transform: translateX(-50%) translateY(-10px) rotate(1deg); 
+  }
 `;
 
 const fadeInUp = keyframes`
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { 
+    opacity: 0; 
+    transform: translateY(40px) scale(0.98); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
 `;
 
-const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(196, 166, 106, 0.4); }
-  50% { box-shadow: 0 0 40px rgba(196, 166, 106, 0.8), 0 0 60px rgba(212, 175, 55, 0.4); }
+const gradientShift = keyframes`
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 `;
 
 export default function Home() {
@@ -57,256 +65,240 @@ export default function Home() {
       minH="100vh"
       position="relative"
       overflow="hidden"
+      fontFamily="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
     >
-      {/* Enhanced Background with Layers */}
+      {/* Modern Aurora Background */}
       <Box
         position="absolute"
         inset={0}
-        bgGradient="linear(to-b, brand.ivory 0%, brand.champagne 25%, brand.sandstone 75%, brand.taupe 100%)"
-        opacity={0.9}
+        bgGradient="linear(135deg, #e0e7ff 0%, #c7d2fe 25%, #a5b4fc 50%, #8b5cf6 75%, #7c3aed 100%)"
+        backgroundSize="400% 400%"
+        animation={`${gradientShift} 15s ease infinite`}
       />
       
-      {/* Subtle Pattern Overlay */}
+      {/* Frosted Glass Overlay */}
       <Box
         position="absolute"
         inset={0}
-        backgroundImage="url('/textures/khmer-damask-motif-light.png')"
-        backgroundSize="300px 300px"
-        backgroundRepeat="repeat"
-        opacity={0.05}
-        mixBlendMode="multiply"
+        bg="rgba(255, 255, 255, 0.1)"
+        backdropFilter="blur(100px)"
       />
 
-      {/* Decorative Elements */}
+      {/* Animated Wave Blob */}
       <Box
         position="absolute"
         top="10%"
-        left="5%"
-        width="80px"
-        height="80px"
-        backgroundImage="url('/vectors/khmer-ornament.svg')"
-        backgroundSize="contain"
-        backgroundRepeat="no-repeat"
-        opacity={0.1}
-        animation={`${floatAnimation} 6s ease-in-out infinite`}
+        left="50%"
+        transform="translateX(-50%)"
+        width="800px"
+        height="600px"
+        background="linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))"
+        borderRadius="50% 40% 60% 30%"
+        filter="blur(40px)"
+        animation={`${waveAnimation} 20s ease-in-out infinite`}
+        zIndex={1}
       />
+
+      {/* Secondary Floating Elements */}
       <Box
         position="absolute"
-        bottom="15%"
-        right="8%"
-        width="60px"
-        height="60px"
-        backgroundImage="url('/vectors/khmer-ornament.svg')"
-        backgroundSize="contain"
-        backgroundRepeat="no-repeat"
-        opacity={0.1}
-        animation={`${floatAnimation} 8s ease-in-out infinite reverse`}
+        top="20%"
+        right="10%"
+        width="200px"
+        height="200px"
+        background="linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1))"
+        borderRadius="full"
+        filter="blur(30px)"
+        animation={`${floatAnimation} 25s ease-in-out infinite`}
+        zIndex={1}
+      />
+
+      <Box
+        position="absolute"
+        bottom="20%"
+        left="15%"
+        width="150px"
+        height="150px"
+        background="linear-gradient(45deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))"
+        borderRadius="30% 70% 40% 60%"
+        filter="blur(25px)"
+        animation={`${floatAnimation} 30s ease-in-out infinite reverse`}
+        zIndex={1}
       />
 
       {/* Main Content */}
-      <Center minH="100vh" position="relative" zIndex={1}>
-        <Container maxW="6xl" textAlign="center">
-          <VStack spacing={12}>
-            {/* Premium Logo Section */}
-            <VStack spacing={6} animation={`${fadeInUp} 1s ease-out`}>
-  <Box
-    position="relative"
-    w="180px"
-    h="180px"
-    borderRadius="full"
-    bg="rgba(255, 255, 255, 0.15)"
-    backdropFilter="blur(20px)"
-    border="1px solid rgba(255, 255, 255, 0.2)"
-    overflow="hidden" // This ensures the image doesn't overflow the box!
-    animation={`${pulseGlow} 4s ease-in-out infinite`}
-    mx="auto"
-  >
-    <Image
-      src="/vectors/Astra.png"
-      alt="Astra Invite Logo"
-      w="100%"
-      h="100%"
-      objectFit="cover"
-      borderRadius="full" // for perfect circle crop
-      fallbackSrc="/vectors/Astra.png"
-      filter="drop-shadow(0 4px 20px rgba(196, 166, 106, 0.3))"
-      // Optionally: remove "maxW" and "height" props!
-    />
-  </Box>
+      <Center minH="100vh" position="relative" zIndex={2}>
+        <Container maxW="7xl" px={{ base: 6, md: 8 }}>
+          <VStack spacing={{ base: 12, md: 16 }}>
+            {/* Hero Logo Section */}
+            <VStack 
+              spacing={8} 
+              animation={`${fadeInUp} 1s ease-out`}
+              textAlign="center"
+            >
+              <Box
+                position="relative"
+                p={8}
+                bg="rgba(255, 255, 255, 0.1)"
+                backdropFilter="blur(20px)"
+                borderRadius="3xl"
+                border="1px solid rgba(255, 255, 255, 0.2)"
+                boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1)"
+                transition="all 0.3s ease"
+                _hover={{
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 35px 60px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2)",
+                }}
+              >
+                <Image
+                  src="/vectors/astra.png"
+                  alt="Astra Invite Logo"
+                  width="120px"
+                  height="120px"
+                  objectFit="contain"
+                  fallbackSrc="/next.svg"
+                  filter="drop-shadow(0 10px 30px rgba(139, 92, 246, 0.2))"
+                />
+              </Box>
               
               <Badge
-                colorScheme="yellow"
-                variant="subtle"
-                px={4}
-                py={2}
+                px={6}
+                py={3}
                 borderRadius="full"
                 fontSize="sm"
-                fontWeight="medium"
-                bg="rgba(196, 166, 106, 0.1)"
-                color="brand.gold"
-                border="1px solid rgba(196, 166, 106, 0.3)"
+                fontWeight="600"
+                bg="linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1))"
+                backdropFilter="blur(10px)"
+                border="1px solid rgba(139, 92, 246, 0.2)"
+                color="purple.700"
+                textTransform="none"
               >
                 ✨ Premium Wedding Invitations
               </Badge>
             </VStack>
 
-            {/* Enhanced Heading Section */}
-            <VStack spacing={6} animation={`${fadeInUp} 1s ease-out 0.2s both`}>
+            {/* Modern Hero Text */}
+            <VStack 
+              spacing={6} 
+              animation={`${fadeInUp} 1s ease-out 0.2s both`}
+              textAlign="center"
+              maxW="4xl"
+            >
               <Heading
                 as="h1"
-                fontSize={{ base: "3xl", md: "5xl", lg: "6xl" }}
-                fontWeight="300"
-                color="brand.darkBrown"
-                fontFamily="'Moulpali', cursive"
-                lineHeight="1.2"
-                position="relative"
-                _after={{
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '60px',
-                  height: '3px',
-                  background: 'linear-gradient(90deg, transparent, #c4a66a, transparent)',
-                  borderRadius: 'full',
-                }}
+                fontSize={{ base: "4xl", md: "6xl", lg: "7xl" }}
+                fontWeight="800"
+                background="linear-gradient(135deg, #1e293b, #475569, #8b5cf6)"
+                backgroundClip="text"
+                color="transparent"
+                lineHeight="1.1"
+                letterSpacing="-0.02em"
               >
                 Astra Invite
               </Heading>
               
               <Text
-                fontSize={{ base: "lg", md: "xl" }}
-                color="brand.textSecondary"
-                maxW="700px"
-                fontFamily="'Battambang', serif"
-                lineHeight="1.8"
+                fontSize={{ base: "xl", md: "2xl" }}
+                color="slate.600"
                 fontWeight="400"
+                lineHeight="1.6"
+                maxW="3xl"
               >
-                Craft exquisite wedding invitations that blend{' '}
-                <Text as="span" color="brand.gold" fontWeight="600">
-                  traditional Khmer artistry
+                Create stunning wedding invitations with{' '}
+                <Text as="span" fontWeight="600" color="purple.600">
+                  traditional Khmer elegance
                 </Text>{' '}
-                with modern elegance, creating timeless memories for your special day.
+                and modern design sophistication.
               </Text>
             </VStack>
 
-            {/* Enhanced Action Cards */}
-            <VStack spacing={8} w="100%" animation={`${fadeInUp} 1s ease-out 0.4s both`}>
+            {/* Modern Dashboard Cards */}
+            <VStack 
+              spacing={10} 
+              w="100%" 
+              animation={`${fadeInUp} 1s ease-out 0.4s both`}
+              maxW="6xl"
+            >
               <Text 
-                fontSize="lg" 
-                color="brand.gold" 
+                fontSize={{ base: "lg", md: "xl" }}
                 fontWeight="600"
-                fontFamily="'Battambang', serif"
-                position="relative"
-                _before={{
-                  content: '""',
-                  position: 'absolute',
-                  left: '-30px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '20px',
-                  height: '1px',
-                  bg: 'brand.gold',
-                }}
-                _after={{
-                  content: '""',
-                  position: 'absolute',
-                  right: '-30px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '20px',
-                  height: '1px',
-                  bg: 'brand.gold',
-                }}
+                color="slate.700"
+                textAlign="center"
               >
-                Choose Your Experience
+                Choose Your Dashboard
               </Text>
               
               <Grid
-                templateColumns={{ base: "1fr", md: "1fr 1fr" }}
+                templateColumns={{ base: "1fr", lg: "1fr 1fr" }}
                 gap={8}
                 w="100%"
-                maxW="800px"
               >
-                {/* Client Card */}
+                {/* Client Dashboard Card */}
                 <GridItem>
                   <Box
-                    p={8}
-                    bg="rgba(255, 255, 255, 0.08)"
+                    p={{ base: 8, md: 10 }}
+                    bg="rgba(255, 255, 255, 0.1)"
                     backdropFilter="blur(20px)"
-                    border="1px solid rgba(255, 255, 255, 0.15)"
                     borderRadius="2xl"
+                    border="1px solid rgba(255, 255, 255, 0.2)"
+                    boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.1)"
                     transition="all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
-                    position="relative"
-                    overflow="hidden"
                     cursor="pointer"
                     onClick={() => router.push('/client')}
-                    sx={{
-                      '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: '-100%',
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
-                        transition: 'left 0.6s ease',
-                      },
-                      '&:hover': {
-                        transform: "translateY(-8px) scale(1.02)",
-                        bg: "rgba(255, 255, 255, 0.12)",
-                        border: "1px solid rgba(196, 166, 106, 0.3)",
-                        boxShadow: "0 20px 60px rgba(196, 166, 106, 0.2)",
-                        '&::before': {
-                          left: '100%',
-                        }
-                      }
+                    _hover={{
+                      transform: "translateY(-8px) scale(1.02)",
+                      bg: "rgba(255, 255, 255, 0.15)",
+                      boxShadow: "0 35px 70px -12px rgba(139, 92, 246, 0.3), 0 0 0 1px rgba(139, 92, 246, 0.2)",
+                      borderColor: "rgba(139, 92, 246, 0.3)",
                     }}
                   >
                     <VStack spacing={6}>
                       <Box
-                        fontSize="4xl"
-                        bg="linear-gradient(135deg, #c4a66a, #d4af37)"
-                        borderRadius="full"
                         w="80px"
                         h="80px"
+                        borderRadius="2xl"
+                        background="linear-gradient(135deg, #8b5cf6, #a855f7, #c084fc)"
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        boxShadow="0 8px 25px rgba(196, 166, 106, 0.3)"
+                        fontSize="3xl"
+                        boxShadow="0 20px 40px -12px rgba(139, 92, 246, 0.4)"
                       >
                         👰🏻
                       </Box>
                       
-                      <VStack spacing={3}>
+                      <VStack spacing={4} textAlign="center">
                         <Heading
                           size="lg"
-                          color="brand.darkBrown"
-                          fontFamily="'Battambang', serif"
-                          fontWeight="600"
+                          fontWeight="700"
+                          color="slate.800"
                         >
                           Client Dashboard
                         </Heading>
                         <Text
                           fontSize="md"
-                          color="brand.textSecondary"
-                          textAlign="center"
-                          lineHeight="1.6"
+                          color="slate.600"
+                          lineHeight="1.7"
+                          maxW="300px"
                         >
-                          Design and customize your perfect wedding invitation with our elegant templates and tools
+                          Design and customize your perfect wedding invitation with our intuitive tools and elegant templates.
                         </Text>
                       </VStack>
                       
                       <Button
-                        variant="ghost"
-                        color="brand.gold"
+                        size="lg"
+                        borderRadius="full"
+                        background="linear-gradient(135deg, #8b5cf6, #a855f7)"
+                        color="white"
                         fontWeight="600"
-                        rightIcon={<span>→</span>}
+                        px={8}
+                        py={6}
                         _hover={{
-                          bg: "rgba(196, 166, 106, 0.1)",
-                          transform: "translateX(4px)",
+                          background: "linear-gradient(135deg, #7c3aed, #8b5cf6)",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 20px 40px -12px rgba(139, 92, 246, 0.4)",
                         }}
+                        rightIcon={<span style={{ fontSize: '18px' }}>→</span>}
                       >
                         Get Started
                       </Button>
@@ -314,84 +306,72 @@ export default function Home() {
                   </Box>
                 </GridItem>
 
-                {/* Admin Card */}
+                {/* Admin Panel Card */}
                 <GridItem>
                   <Box
-                    p={8}
-                    bg="rgba(255, 255, 255, 0.08)"
+                    p={{ base: 8, md: 10 }}
+                    bg="rgba(255, 255, 255, 0.1)"
                     backdropFilter="blur(20px)"
-                    border="1px solid rgba(255, 255, 255, 0.15)"
                     borderRadius="2xl"
+                    border="1px solid rgba(255, 255, 255, 0.2)"
+                    boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.1)"
                     transition="all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
-                    position="relative"
-                    overflow="hidden"
                     cursor="pointer"
                     onClick={() => router.push('/admin')}
-                    sx={{
-                      '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: '-100%',
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
-                        transition: 'left 0.6s ease',
-                      },
-                      '&:hover': {
-                        transform: "translateY(-8px) scale(1.02)",
-                        bg: "rgba(255, 255, 255, 0.12)",
-                        border: "1px solid rgba(92, 44, 44, 0.3)",
-                        boxShadow: "0 20px 60px rgba(92, 44, 44, 0.2)",
-                        '&::before': {
-                          left: '100%',
-                        }
-                      }
+                    _hover={{
+                      transform: "translateY(-8px) scale(1.02)",
+                      bg: "rgba(255, 255, 255, 0.15)",
+                      boxShadow: "0 35px 70px -12px rgba(59, 130, 246, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.2)",
+                      borderColor: "rgba(59, 130, 246, 0.3)",
                     }}
                   >
                     <VStack spacing={6}>
                       <Box
-                        fontSize="4xl"
-                        bg="linear-gradient(135deg, #5c2c2c, #7c6b50)"
-                        borderRadius="full"
                         w="80px"
                         h="80px"
+                        borderRadius="2xl"
+                        background="linear-gradient(135deg, #3b82f6, #2563eb, #1d4ed8)"
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        boxShadow="0 8px 25px rgba(92, 44, 44, 0.3)"
+                        fontSize="3xl"
+                        boxShadow="0 20px 40px -12px rgba(59, 130, 246, 0.4)"
                       >
                         ⚙️
                       </Box>
                       
-                      <VStack spacing={3}>
+                      <VStack spacing={4} textAlign="center">
                         <Heading
                           size="lg"
-                          color="brand.darkBrown"
-                          fontFamily="'Battambang', serif"
-                          fontWeight="600"
+                          fontWeight="700"
+                          color="slate.800"
                         >
                           Admin Panel
                         </Heading>
                         <Text
                           fontSize="md"
-                          color="brand.textSecondary"
-                          textAlign="center"
-                          lineHeight="1.6"
+                          color="slate.600"
+                          lineHeight="1.7"
+                          maxW="300px"
                         >
-                          Manage clients, oversee projects, and configure system settings with powerful admin tools
+                          Manage clients, oversee projects, and configure system settings with powerful administrative tools.
                         </Text>
                       </VStack>
                       
                       <Button
-                        variant="ghost"
-                        color="brand.darkBrown"
+                        size="lg"
+                        borderRadius="full"
+                        background="linear-gradient(135deg, #3b82f6, #2563eb)"
+                        color="white"
                         fontWeight="600"
-                        rightIcon={<span>→</span>}
+                        px={8}
+                        py={6}
                         _hover={{
-                          bg: "rgba(92, 44, 44, 0.1)",
-                          transform: "translateX(4px)",
+                          background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 20px 40px -12px rgba(59, 130, 246, 0.4)",
                         }}
+                        rightIcon={<span style={{ fontSize: '18px' }}>→</span>}
                       >
                         Access Panel
                       </Button>
@@ -401,61 +381,69 @@ export default function Home() {
               </Grid>
             </VStack>
 
-            {/* Enhanced Secondary Actions */}
-            <VStack spacing={6} animation={`${fadeInUp} 1s ease-out 0.6s both`}>
+            {/* Secondary Actions */}
+            <VStack 
+              spacing={8} 
+              animation={`${fadeInUp} 1s ease-out 0.6s both`}
+              textAlign="center"
+            >
               {/* Login Link */}
-              <Text fontSize="md" color="brand.textSecondary">
-                Already have an account?{' '}
-                <Button
-                  variant="link"
-                  color="brand.gold"
-                  fontWeight="600"
-                  textDecoration="underline"
-                  textUnderlineOffset="3px"
-                  _hover={{
-                    color: "brand.darkGold",
-                    textDecoration: "none",
-                  }}
-                  onClick={() => router.push('/login')}
-                >
-                  Sign In
-                </Button>
+                <Text fontSize="lg" color="slate.600" fontWeight="400">
+                  Don't have an account?{' '}
+                  <Button
+                    variant="link"
+                    color="blue.600"
+                    fontWeight="600"
+                    fontSize="lg"
+                    _hover={{
+                      color: "blue.700",
+                      textDecoration: "none",
+                    }}
+                    onClick={() => window.open('https://t.me/Astra_decor', '_blank')}
+                    leftIcon={<span style={{ fontSize: '16px' }}>📱</span>}
+                  >
+                    Sign Up via Telegram
+                  </Button>
               </Text>
 
-              {/* Demo Invitation */}
+              {/* Demo Section */}
               <Box
-                p={6}
-                bg="rgba(255, 255, 255, 0.05)"
+                p={8}
+                bg="rgba(255, 255, 255, 0.08)"
                 backdropFilter="blur(15px)"
-                border="1px solid rgba(255, 255, 255, 0.1)"
-                borderRadius="xl"
+                borderRadius="2xl"
+                border="1px solid rgba(255, 255, 255, 0.15)"
+                boxShadow="0 20px 40px -12px rgba(0, 0, 0, 0.1)"
                 transition="all 0.3s ease"
                 _hover={{
-                  bg: "rgba(255, 255, 255, 0.08)",
-                  border: "1px solid rgba(196, 166, 106, 0.2)",
+                  bg: "rgba(255, 255, 255, 0.12)",
+                  borderColor: "rgba(255, 255, 255, 0.25)",
+                  transform: "translateY(-3px)",
                 }}
               >
-                <VStack spacing={4}>
-                  <Text fontSize="md" color="brand.gold" fontWeight="600">
+                <VStack spacing={5}>
+                  <Text fontSize="lg" fontWeight="600" color="slate.700">
                     Experience Our Craft
                   </Text>
                   <Button
                     size="lg"
                     variant="outline"
-                    borderColor="brand.gold"
-                    color="brand.gold"
-                    fontFamily="'Battambang', serif"
+                    borderColor="purple.400"
+                    color="purple.600"
                     fontWeight="600"
+                    borderRadius="full"
                     px={8}
+                    py={6}
                     borderWidth="2px"
                     _hover={{
-                      bg: "brand.gold",
+                      bg: "purple.500",
+                      borderColor: "purple.500",
                       color: "white",
                       transform: "translateY(-2px)",
-                      boxShadow: "0 8px 25px rgba(196, 166, 106, 0.4)",
+                      boxShadow: "0 15px 30px -8px rgba(139, 92, 246, 0.4)",
                     }}
                     onClick={() => router.push('/invite/nuid19')}
-                    leftIcon={<span>📮</span>}
+                    leftIcon={<span style={{ fontSize: '20px' }}>📮</span>}
                   >
                     View Demo Invitation
                   </Button>
@@ -463,15 +451,25 @@ export default function Home() {
               </Box>
             </VStack>
 
-            {/* Enhanced Footer */}
-            <VStack spacing={4} pt={8} animation={`${fadeInUp} 1s ease-out 0.8s both`}>
+            {/* Modern Footer */}
+            <VStack 
+              spacing={6} 
+              pt={12} 
+              animation={`${fadeInUp} 1s ease-out 0.8s both`}
+              textAlign="center"
+            >
               <Box
-                w="100px"
+                w="120px"
                 h="1px"
-                bg="linear-gradient(90deg, transparent, rgba(196, 166, 106, 0.5), transparent)"
+                background="linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.6), transparent)"
               />
-              <Text fontSize="sm" color="brand.textSecondary" opacity={0.8}>
-                © 2025 Astra Invite — Crafting Timeless Khmer Wedding Memories
+              <Text 
+                fontSize="sm" 
+                color="slate.500" 
+                fontWeight="400"
+                letterSpacing="0.025em"
+              >
+                © 2025 Astra Invite — Crafting Modern Wedding Experiences
               </Text>
             </VStack>
           </VStack>
