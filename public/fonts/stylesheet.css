@@ -1,0 +1,162 @@
+@font-face {
+    font-family: 'Moul';
+    src: url('Moul.woff2') format('woff2'),
+        url('Moul.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Dangrek';
+    src: url('Dangrek.woff2') format('woff2'),
+        url('Dangrek.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Moul Pali';
+    src: url('MoulPali.woff2') format('woff2'),
+        url('MoulPali.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Koulen';
+    src: url('Koulen.woff2') format('woff2'),
+        url('Koulen.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Hanuman';
+    src: url('Hanuman-Bold.woff2') format('woff2'),
+        url('Hanuman-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Kantumruy';
+    src: url('KantumruyLight.woff2') format('woff2'),
+        url('KantumruyLight.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Kantumruy';
+    src: url('Kantumruy.woff2') format('woff2'),
+        url('Kantumruy.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Battambang';
+    src: url('Battambang-Bold.woff2') format('woff2'),
+        url('Battambang-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Kantumruy';
+    src: url('Kantumruy-Bold.woff2') format('woff2'),
+        url('Kantumruy-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Hanuman';
+    src: url('Hanuman.woff2') format('woff2'),
+        url('Hanuman.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Bayon';
+    src: url('Bayon.woff2') format('woff2'),
+        url('Bayon.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Battambang';
+    src: url('Battambang.woff2') format('woff2'),
+        url('Battambang.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Khmer Moul';
+    src: url('KhmerMoul.woff2') format('woff2'),
+        url('KhmerMoul.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Content';
+    src: url('Content.woff2') format('woff2'),
+        url('Content.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Khmer OS Siemreap';
+    src: url('KhmerOSSiemreap.woff2') format('woff2'),
+        url('KhmerOSSiemreap.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Khmer M1';
+    src: url('KhmM1.woff2') format('woff2'),
+        url('KhmM1.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Khmer M2';
+    src: url('KhmM2.woff2') format('woff2'),
+        url('KhmM2.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'AKbalthom Freehand';
+    src: url('AKbalthomFreehand.woff2') format('woff2'),
+        url('AKbalthomFreehand.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
