@@ -1,4 +1,6 @@
 'use client'; // This directive is necessary for client-side hooks and interactions in Next.js App Router
+import dynamic from 'next/dynamic';
+import { useInView } from 'react-intersection-observer';
 
 import React, { useState, useEffect } from "react";
 // Assuming db is configured and exported from '@/lib/firebase'
@@ -744,7 +746,106 @@ const GlobalKeyframes = () => (
     />
 );
 
+// Lazy load heavy components
+const LazyCountdownTimer = dynamic(() => Promise.resolve(CountdownTimer), {
+  loading: () => (
+    <Box
+      bg="linear-gradient(135deg, rgba(196, 166, 106, 0.1), rgba(212, 175, 55, 0.05))"
+      borderRadius="2xl"
+      p={{ base: 6, md: 8 }}
+      border="1px solid rgba(196, 166, 106, 0.2)"
+      minH="200px"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Spinner size="lg" color="brand.gold" />
+    </Box>
+  ),
+  ssr: false
+});
 
+const LazyRSVPForm = dynamic(() => Promise.resolve(RSVPForm), {
+  loading: () => (
+    <Center>
+      <Spinner size="xl" color="brand.gold" />
+    </Center>
+  ),
+  ssr: false
+});
+
+const LazyMapSection = dynamic(() => import('./components/MapSection'), {
+  loading: () => (
+    <Box
+      bg="rgba(255, 255, 255, 0.1)"
+      borderRadius="xl"
+      p={8}
+      textAlign="center"
+      minH="400px"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <VStack spacing={4}>
+        <Spinner size="lg" color="brand.gold" />
+        <Text fontFamily="khmerBody" color="brand.textPrimary">
+          Loading map...
+        </Text>
+      </VStack>
+    </Box>
+  ),
+  ssr: false
+});
+
+// Progressive image loading component
+const LazyImage: React.FC<{
+  src: string;
+  alt: string;
+  fallbackSrc?: string;
+  [key: string]: any;
+}> = ({ src, alt, fallbackSrc, ...props }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
+    rootMargin: '100px'
+  });
+
+  return (
+    <Box ref={ref} position="relative" {...props}>
+      {inView && (
+        <>
+          {!isLoaded && (
+            <Box
+              position="absolute"
+              inset={0}
+              bg="linear-gradient(135deg, rgba(196, 166, 106, 0.1), rgba(212, 175, 55, 0.05))"
+              borderRadius="inherit"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Spinner size="md" color="brand.gold" />
+            </Box>
+          )}
+          <Image
+            src={hasError ? (fallbackSrc || src) : src}
+            alt={alt}
+            onLoad={() => setIsLoaded(true)}
+            onError={() => {
+              setHasError(true);
+              setIsLoaded(true);
+            }}
+            opacity={isLoaded ? 1 : 0}
+            transition="opacity 0.5s ease"
+            {...props}
+          />
+        </>
+      )}
+    </Box>
+  );
+};
 
 // Format date to elegant full format
 const formatElegantDate = (dateStr: string, lang: 'en' | 'kh'): string => {
@@ -2315,20 +2416,37 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
     const content = astraConfig.content[currentLang];
     const [isContentVisible, setContentVisible] = useState<boolean>(false);
     const [showButton, setShowButton] = useState<boolean>(false);
+    const [showMonogram, setShowMonogram] = useState<boolean>(false);
+    const [showTitle, setShowTitle] = useState<boolean>(false);
+    const [showGuestName, setShowGuestName] = useState<boolean>(false);
+    const [showQuote, setShowQuote] = useState<boolean>(false);
+    const [isExiting, setIsExiting] = useState<boolean>(false);
 
     useEffect(() => {
-        const contentTimer = setTimeout(() => setContentVisible(true), 250);
-        const buttonTimer = setTimeout(() => setShowButton(true), 1200);
+        // Staggered entrance animation with smoother timing
+        const monogramTimer = setTimeout(() => setShowMonogram(true), 500);
+        const titleTimer = setTimeout(() => setShowTitle(true), 1000);
+        const guestNameTimer = setTimeout(() => setShowGuestName(true), 1500);
+        const quoteTimer = setTimeout(() => setShowQuote(true), 2000);
+        const contentTimer = setTimeout(() => setContentVisible(true), 2500);
+        const buttonTimer = setTimeout(() => setShowButton(true), 3000);
+        
         return () => {
+            clearTimeout(monogramTimer);
+            clearTimeout(titleTimer);
+            clearTimeout(guestNameTimer);
+            clearTimeout(quoteTimer);
             clearTimeout(contentTimer);
             clearTimeout(buttonTimer);
         };
     }, []);
 
-    const contentAnimationProps = {
-        opacity: isContentVisible ? 1 : 0,
-        transform: isContentVisible ? 'translateY(0)' : 'translateY(20px)',
-        transition: 'opacity 1s ease-out, transform 1s ease-out',
+    const handleEnter = () => {
+        setIsExiting(true);
+        // Add delay for exit animation
+        setTimeout(() => {
+            onEnter();
+        }, 600); // 600ms for smooth exit
     };
 
     return (
@@ -2345,6 +2463,10 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
             bgSize="auto, cover"
             bgRepeat="repeat, no-repeat"
             bgPosition="center, center"
+            // Add exit animation
+            opacity={isExiting ? 0 : 1}
+            transform={isExiting ? 'scale(0.95)' : 'scale(1)'}
+            transition="all 0.8s cubic-bezier(0.4, 0, 0.2, 1)"
             _after={{
                 content: "''",
                 position: "absolute",
@@ -2363,14 +2485,12 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                 WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 20%, black 80%, transparent 100%)",
             }}
         >
-            <FloatingPetals />
             <Smoke />
 
             <VStack
                 zIndex={1}
                 spacing={5}
                 textAlign="center"
-                {...contentAnimationProps}
                 bg="rgba(255, 255, 255, 0.25)"
                 backdropFilter="blur(12px)"
                 p={{ base: 8, md: 12 }}
@@ -2378,56 +2498,85 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                 boxShadow="0 15px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255, 255, 255, 0.4)"
                 border="1px solid rgba(255, 255, 255, 0.3)"
                 maxW="lg"
+                // Enhanced container animation with exit state
+                opacity={isContentVisible && !isExiting ? 1 : 0}
+                transform={
+                    isExiting 
+                        ? 'translateY(-50px) scale(0.9)' 
+                        : isContentVisible 
+                            ? 'translateY(0) scale(1)' 
+                            : 'translateY(30px) scale(0.95)'
+                }
+                transition="all 1s cubic-bezier(0.4, 0, 0.2, 1)"
             >
 
-                <Image
-                    src={weddingInfo?.monogramUrl || '/vectors/monogram.svg'}  // Now uses dynamic source
-                    alt="Couple Monogram"
-                    maxW={{ base: "100px", md: "150px" }}
-                    height="auto"
-                    fallbackSrc="/vectors/monogram.svg"
-                />
+                {/* Title - Second to appear */}
+                <Box
+                    opacity={showTitle ? 1 : 0}
+                    transform={showTitle ? 'translateY(0)' : 'translateY(30px)'}
+                    transition="all 1s cubic-bezier(0.4, 0, 0.2, 1)"
+                >
+                    <Heading 
+                        as="h2" 
+                        fontSize={{ base: '1.4rem', md: '1.8rem' }} 
+                        fontFamily={currentLang === 'kh' ? "Moul" : "WeddingFont"} 
+                        color="brand.maroon" 
+                        letterSpacing="0.08em" 
+                        lineHeight="1.3"
+                        fontWeight="bold"
+                        textAlign="center"
+                        mb={2}
+                    >
+                        {currentLang === 'kh' ? 'សូមគោរពអញ្ជើញ' : 'Cordially Invited'}
+                    </Heading>
+                </Box>
 
-                {/* Respectful Invitation Header - Always in Khmer first */}
-                <Heading 
-                    as="h2" 
-                    fontSize={{ base: '1.4rem', md: '1.8rem' }} 
-                    fontFamily="khmerHeading" 
-                    color="brand.maroon" 
-                    letterSpacing="0.08em" 
-                    lineHeight="1.3"
-                    fontWeight="bold"
-                    textAlign="center"
-                    mb={2}
+                {/* Guest Name - Third to appear with special golden effect */}
+                <Box
+                    opacity={showGuestName ? 1 : 0}
+                    transform={showGuestName ? 'translateY(0) scale(1)' : 'translateY(25px) scale(0.9)'}
+                    transition="all 1.2s cubic-bezier(0.4, 0, 0.2, 1)"
                 >
-                    {currentLang === 'kh' ? 'សូមគោរពអញ្ជើញ' : 'Cordially Invited'}
-                </Heading>
-
-                <Text
-                    fontSize={{ base: '3.5xl', md: '4.5xl' }}
-                    fontFamily="khmerSubheading"
-                    color="brand.gold"
-                    fontWeight="bold"
-                    letterSpacing="1px"
-                    textShadow="0 3px 6px rgba(196, 166, 106, 0.4)"
-                >
-                    {guestName || content.guestDefault}
-                </Text>
+                    <Text
+                        fontSize={{ base: '3.5xl', md: '4.5xl' }}
+                        fontFamily="khmerSubheading"
+                        color="brand.gold"
+                        fontWeight="bold"
+                        letterSpacing="1px"
+                        textShadow="0 3px 6px rgba(196, 166, 106, 0.4)"
+                        css={{
+                            animation: showGuestName ? `${textShimmer} 4s ease-in-out infinite 0.5s` : 'none',
+                        }}
+                    >
+                        {guestName || content.guestDefault}
+                    </Text>
+                </Box>
                 
-                <Text
-                    fontSize={{ base: 'md', md: 'lg' }}
-                    color="brand.mediumBrown"
-                    fontStyle="italic"
-                    fontFamily="khmerBody"
-                    maxW="sm"
-                    pt={2}
-                    lineHeight="1.6"
+                {/* Quote - Fourth to appear */}
+                <Box
+                    opacity={showQuote ? 1 : 0}
+                    transform={showQuote ? 'translateY(0)' : 'translateY(20px)'}
+                    transition="all 1s cubic-bezier(0.4, 0, 0.2, 1)"
                 >
-                    {content.quote}
-                </Text>
+                    <Text
+                        fontSize={{ base: 'md', md: 'lg' }}
+                        color="brand.mediumBrown"
+                        fontStyle="italic"
+                        fontFamily="khmerBody"
+                        maxW="sm"
+                        pt={2}
+                        lineHeight="1.6"
+                    >
+                        {content.quote}
+                    </Text>
+                </Box>
                 
-                // ...existing code...
-                {showButton && (
+                {/* Button - Last to appear with enhanced entrance */}
+                <Box
+                    opacity={showButton ? 1 : 0}
+                    transform={showButton ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.8)'}
+                    transition="all 1.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                >
                     <Button
                         onClick={onEnter}
                         bg="linear-gradient(135deg, #FFD700 0%, #FFA500 20%, #FFD700 40%, #B8860B 60%, #FFD700 80%, #DAA520 100%)"
@@ -2440,10 +2589,9 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                         fontSize={{ base: 'xl', md: '2xl' }}
                         fontWeight="900"
                         letterSpacing="1px"
-                        // Reduced shadow spread - much more subtle
                         boxShadow="0 8px 20px rgba(255, 215, 0, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 215, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.1)"
-                        border="2px solid #FFD700" // Reduced border thickness
-                        textShadow="0 2px 4px rgba(0,0,0,0.3), 0 1px 0px rgba(255,255,255,0.2)" // Reduced text shadow
+                        border="2px solid #FFD700"
+                        textShadow="0 2px 4px rgba(0,0,0,0.3), 0 1px 0px rgba(255,255,255,0.2)"
                         position="relative"
                         overflow="hidden"
                         zIndex={10}
@@ -2460,18 +2608,17 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                         _after={{
                             content: '""',
                             position: 'absolute',
-                            inset: '-3px', // Reduced from -6px
+                            inset: '-3px',
                             background: 'linear-gradient(45deg, #FFD700, #FFA500, #FFD700, #B8860B, #FFD700)',
                             backgroundSize: '300% 300%',
                             borderRadius: 'full',
                             zIndex: -1,
-                            opacity: 0.6, // Reduced opacity
+                            opacity: 0.6,
                             animation: `${gradientShift} 3s ease-in-out infinite`,
                         }}
                         _hover={{ 
-                            // More subtle hover shadows
                             boxShadow: '0 12px 30px rgba(255, 215, 0, 0.5), inset 0 3px 8px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 215, 0, 0.4), 0 6px 24px rgba(0, 0, 0, 0.15)', 
-                            transform: 'scale(1.05) translateY(-3px)', // Reduced scale and movement
+                            transform: 'scale(1.05) translateY(-3px)',
                             bg: 'linear-gradient(135deg, #FFA500 0%, #FFD700 20%, #FFFF00 40%, #FFD700 60%, #FFA500 80%, #B8860B 100%)',
                             borderColor: '#FFFF00',
                             _before: {
@@ -2479,9 +2626,13 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                             },
                         }}
                         _active={{
-                            transform: 'scale(1.02) translateY(-2px)', // Reduced active state
+                            transform: 'scale(1.02) translateY(-2px)',
                         }}
                         transition="all 0.4s cubic-bezier(.25,.8,.25,1)"
+                        // Add entrance animation
+                        css={{
+                            animation: showButton ? `${pulseGold} 2s ease-in-out infinite 1s` : 'none',
+                        }}
                     >
                         <Text
                             fontSize="inherit"
@@ -2494,513 +2645,17 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                                 backgroundClip: "text",
                                 WebkitBackgroundClip: "text",
                                 WebkitTextFillColor: "transparent",
-                                filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))", // Reduced text drop shadow
+                                filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.2))",
                             }}
                         >
-                            {currentLang === 'kh' ? 'បើកធៀប' : 'Open Comparison'}
+                            {content.enterButton}
                         </Text>
                     </Button>
-                )}
+                </Box>
             </VStack>
         </Center>
     );
 };
-
-
-const MagicRootLines = () => (
-<Box
-  position="fixed"
-  top={0}
-  left={0}
-  width="100vw"
-  height="100vh"
-  pointerEvents="none" // Allows interaction with content below
-  zIndex={-10} // Ensures it stays in the background
-  overflow="hidden"
-  opacity={0.9} // Increased overall opacity
-  mixBlendMode="multiply" // Blends nicely with background colors
-  style={{ backgroundColor: "rgba(255, 255, 240, 0.08)" }} // Slightly more visible background
->
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 1920 1080"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        filter: 'blur(0.1px)', // Reduced blur for more clarity
-      }}
-      preserveAspectRatio="xMidYMid slice"
-    >
-      <defs>
-        {/* Enhanced gradients for more visibility */}
-        <linearGradient id="khmerRootGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="rgba(255, 250, 205, 0.8)" /> {/* Increased opacity */}
-          <stop offset="25%" stopColor="rgba(255, 255, 224, 0.9)" />
-          <stop offset="50%" stopColor="rgba(250, 250, 210, 1.0)" />
-          <stop offset="75%" stopColor="rgba(245, 222, 179, 0.9)" />
-          <stop offset="100%" stopColor="rgba(255, 250, 205, 0.8)" />
-        </linearGradient>
-
-        <radialGradient id="rootNodeGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(255, 255, 224, 1.0)" /> {/* Brighter glow */}
-          <stop offset="50%" stopColor="rgba(250, 250, 210, 0.8)" />
-          <stop offset="100%" stopColor="rgba(255, 250, 205, 0.3)" />
-        </radialGradient>
-
-        {/* Enhanced filters for better visibility */}
-        <filter id="mysticalBreathingGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" /> {/* Slightly more blur */}
-          <feColorMatrix in="coloredBlur" type="matrix"
-            values="1   0   0   0   0
-                    0   1   0   0   0
-                    0   0   1   0   0
-                    0   0   0   0.7 0" /> {/* Increased opacity */}
-          <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-
-        <filter id="rootGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="rgba(255, 255, 224, 0.8)"/> {/* Stronger glow */}
-          <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="rgba(250, 250, 210, 0.6)"/>
-        </filter>
-      </defs>
-
-      {/* LEFT SIDE ROOT SYSTEM - EXPANDED AND ENHANCED */}
-
-      {/* Main Left Root Trunk - Made bigger */}
-      <path
-        d="M 0 1080
-           Q 80 950 120 820
-           Q 180 690 150 560
-           Q 220 430 180 300
-           Q 140 150 150 0"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="3" // Increased from 1.5
-        strokeDasharray="35 15 12 15" // Bigger dashes
-        filter="url(#mysticalBreathingGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.5" // Increased opacity
-      >
-        <animate attributeName="stroke-dashoffset" values="0;600" dur="80s" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" values="3;5;3" dur="15s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.4;0.7;0.4" dur="10s" repeatCount="indefinite" /> {/* Lighter during breathing */}
-      </path>
-
-      {/* Left Primary Branches - Extended reach */}
-      <path
-        d="M 120 800
-           Q 200 750 300 720
-           Q 400 690 500 650
-           Q 600 610 700 580
-           Q 800 550 900 520"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2.5" // Increased
-        strokeDasharray="30 12 8 12"
-        filter="url(#mysticalBreathingGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.4"
-        style={{ animationDelay: '3s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;500" dur="75s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="12s" repeatCount="indefinite" />
-      </path>
-
-      <path
-        d="M 150 600
-           Q 250 570 350 540
-           Q 450 510 550 480
-           Q 650 450 750 420
-           Q 850 390 950 360"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2"
-        strokeDasharray="25 10 6 10"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.35"
-        style={{ animationDelay: '6s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;400" dur="70s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.25;0.5;0.25" dur="14s" repeatCount="indefinite" />
-      </path>
-
-      {/* Additional Left Branches - More spread */}
-      <path
-        d="M 100 900
-           Q 200 880 320 860
-           Q 440 840 560 820
-           Q 680 800 800 780
-           Q 920 760 1040 740"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2.2"
-        strokeDasharray="28 11 7 11"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.3"
-        style={{ animationDelay: '9s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;350" dur="65s" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" values="2.2;3.5;2.2" dur="16s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.2;0.45;0.2" dur="18s" repeatCount="indefinite" />
-      </path>
-
-      {/* Left Secondary Branches - More elaborate */}
-      <path
-        d="M 300 720
-           Q 380 690 480 660
-           Q 580 630 680 600
-           Q 780 570 880 540
-           Q 980 510 1080 480"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="1.8"
-        strokeDasharray="22 9 5 9"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.25"
-        style={{ animationDelay: '12s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;300" dur="65s" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" values="1.8;3;1.8" dur="16s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.15;0.4;0.15" dur="18s" repeatCount="indefinite" />
-      </path>
-
-      {/* LEFT TOP ROOTS - Extended */}
-      <path
-        d="M 0 0
-           Q 120 30 240 60
-           Q 360 90 480 120
-           Q 600 150 720 180
-           Q 840 210 960 240"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="1.8"
-        strokeDasharray="24 9 6 9"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.3"
-        style={{ animationDelay: '15s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;250" dur="60s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.2;0.45;0.2" dur="16s" repeatCount="indefinite" />
-      </path>
-
-      {/* LEFT BOTTOM ROOTS - Extended */}
-      <path
-        d="M 0 1080
-           Q 120 1050 240 1020
-           Q 360 990 480 960
-           Q 600 930 720 900
-           Q 840 870 960 840"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2"
-        strokeDasharray="26 10 7 10"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.35"
-        style={{ animationDelay: '18s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;320" dur="70s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.25;0.5;0.25" dur="14s" repeatCount="indefinite" />
-      </path>
-
-      {/* RIGHT SIDE ROOT SYSTEM - MIRRORED AND ENHANCED */}
-
-      {/* Main Right Root Trunk - Made bigger */}
-      <path
-        d="M 1920 1080
-           Q 1840 950 1800 820
-           Q 1740 690 1770 560
-           Q 1700 430 1740 300
-           Q 1780 150 1770 0"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="3" // Increased
-        strokeDasharray="35 15 12 15"
-        filter="url(#mysticalBreathingGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.5"
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-600" dur="80s" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" values="3;5;3" dur="15s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.4;0.7;0.4" dur="10s" repeatCount="indefinite" />
-      </path>
-
-      {/* Right Primary Branches - Extended reach */}
-      <path
-        d="M 1800 800
-           Q 1720 750 1620 720
-           Q 1520 690 1420 650
-           Q 1320 610 1220 580
-           Q 1120 550 1020 520"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2.5"
-        strokeDasharray="30 12 8 12"
-        filter="url(#mysticalBreathingGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.4"
-        style={{ animationDelay: '4s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-500" dur="75s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="12s" repeatCount="indefinite" />
-      </path>
-
-      <path
-        d="M 1770 600
-           Q 1670 570 1570 540
-           Q 1470 510 1370 480
-           Q 1270 450 1170 420
-           Q 1070 390 970 360"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2"
-        strokeDasharray="25 10 6 10"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.35"
-        style={{ animationDelay: '7s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-400" dur="70s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.25;0.5;0.25" dur="14s" repeatCount="indefinite" />
-      </path>
-
-      {/* Additional Right Branches - More spread */}
-      <path
-        d="M 1820 900
-           Q 1720 880 1600 860
-           Q 1480 840 1360 820
-           Q 1240 800 1120 780
-           Q 1000 760 880 740"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2.2"
-        strokeDasharray="28 11 7 11"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.3"
-        style={{ animationDelay: '10s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-350" dur="65s" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" values="2.2;3.5;2.2" dur="16s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.2;0.45;0.2" dur="18s" repeatCount="indefinite" />
-      </path>
-
-      {/* Right Secondary Branches - More elaborate */}
-      <path
-        d="M 1620 720
-           Q 1540 690 1440 660
-           Q 1340 630 1240 600
-           Q 1140 570 1040 540
-           Q 940 510 840 480"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="1.8"
-        strokeDasharray="22 9 5 9"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.25"
-        style={{ animationDelay: '13s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-300" dur="65s" repeatCount="indefinite" />
-        <animate attributeName="stroke-width" values="1.8;3;1.8" dur="16s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.15;0.4;0.15" dur="18s" repeatCount="indefinite" />
-      </path>
-
-      {/* RIGHT TOP ROOTS - Extended */}
-      <path
-        d="M 1920 0
-           Q 1800 30 1680 60
-           Q 1560 90 1440 120
-           Q 1320 150 1200 180
-           Q 1080 210 960 240"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="1.8"
-        strokeDasharray="24 9 6 9"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.3"
-        style={{ animationDelay: '16s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-250" dur="60s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.2;0.45;0.2" dur="16s" repeatCount="indefinite" />
-      </path>
-
-      {/* RIGHT BOTTOM ROOTS - Extended */}
-      <path
-        d="M 1920 1080
-           Q 1800 1050 1680 1020
-           Q 1560 990 1440 960
-           Q 1320 930 1200 900
-           Q 1080 870 960 840"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="2"
-        strokeDasharray="26 10 7 10"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.35"
-        style={{ animationDelay: '19s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-320" dur="70s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.25;0.5;0.25" dur="14s" repeatCount="indefinite" />
-      </path>
-
-      {/* CROSS-CENTER PATTERNS - New additions for full width coverage */}
-      
-      {/* Horizontal spanning lines */}
-      <path
-        d="M 0 400
-           Q 240 380 480 400
-           Q 720 420 960 400
-           Q 1200 380 1440 400
-           Q 1680 420 1920 400"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="1.5"
-        strokeDasharray="20 8 5 8"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.25"
-        style={{ animationDelay: '20s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;280" dur="90s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.15;0.35;0.15" dur="20s" repeatCount="indefinite" />
-      </path>
-
-      <path
-        d="M 0 680
-           Q 240 700 480 680
-           Q 720 660 960 680
-           Q 1200 700 1440 680
-           Q 1680 660 1920 680"
-        stroke="url(#khmerRootGlow)"
-        strokeWidth="1.5"
-        strokeDasharray="20 8 5 8"
-        filter="url(#rootGlow)"
-        fill="none"
-        className="breathing-glow"
-        strokeLinecap="round"
-        opacity="0.25"
-        style={{ animationDelay: '22s' }}
-      >
-        <animate attributeName="stroke-dashoffset" values="0;-280" dur="90s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.15;0.35;0.15" dur="20s" repeatCount="indefinite" />
-      </path>
-
-      {/* ENHANCED ROOT NODES - Bigger and more visible */}
-
-      {/* Left side root nodes */}
-      <circle
-        cx="300"
-        cy="720"
-        r="2.5" // Increased size
-        fill="url(#rootNodeGlow)"
-        filter="url(#mysticalBreathingGlow)"
-        opacity="0.3" // More visible
-      >
-        <animate attributeName="r" values="2.5;4;2.5" dur="10s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.2;0.4;0.2" dur="8s" repeatCount="indefinite" />
-      </circle>
-
-      <circle
-        cx="480"
-        cy="660"
-        r="2" // Bigger nodes
-        fill="url(#rootNodeGlow)"
-        filter="url(#rootGlow)"
-        opacity="0.25"
-      >
-        <animate attributeName="r" values="2;3.5;2" dur="12s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.15;0.35;0.15" dur="10s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Right side root nodes */}
-      <circle
-        cx="1620"
-        cy="720"
-        r="2.5"
-        fill="url(#rootNodeGlow)"
-        filter="url(#mysticalBreathingGlow)"
-        opacity="0.3"
-      >
-        <animate attributeName="r" values="2.5;4;2.5" dur="10s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.2;0.4;0.2" dur="8s" repeatCount="indefinite" />
-      </circle>
-
-      <circle
-        cx="1440"
-        cy="660"
-        r="2"
-        fill="url(#rootNodeGlow)"
-        filter="url(#rootGlow)"
-        opacity="0.25"
-      >
-        <animate attributeName="r" values="2;3.5;2" dur="12s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.15;0.35;0.15" dur="10s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Additional atmospheric orbs - More scattered and bigger */}
-      <circle cx="200" cy="450" r="1.5" fill="rgba(255, 255, 224, 0.3)" filter="url(#rootGlow)" opacity="0.15">
-        <animate attributeName="cy" values="450;445;455;450" dur="20s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.1;0.25;0.1" dur="15s" repeatCount="indefinite" />
-      </circle>
-
-      <circle cx="600" cy="380" r="1.2" fill="rgba(250, 250, 210, 0.3)" filter="url(#rootGlow)" opacity="0.12">
-        <animate attributeName="cy" values="380;375;385;380" dur="25s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.08;0.2;0.08" dur="18s" repeatCount="indefinite" />
-      </circle>
-
-      <circle cx="1720" cy="450" r="1.5" fill="rgba(255, 255, 224, 0.3)" filter="url(#rootGlow)" opacity="0.15">
-        <animate attributeName="cy" values="450;455;445;450" dur="22s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.1;0.25;0.1" dur="16s" repeatCount="indefinite" />
-      </circle>
-
-      <circle cx="1320" cy="380" r="1.2" fill="rgba(250, 250, 210, 0.3)" filter="url(#rootGlow)" opacity="0.12">
-        <animate attributeName="cy" values="380;385;375;380" dur="28s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.08;0.2;0.08" dur="19s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Center connecting elements */}
-      <circle cx="960" cy="540" r="1.8" fill="rgba(255, 215, 0, 0.4)" filter="url(#rootGlow)" opacity="0.2">
-        <animate attributeName="cy" values="540;535;545;540" dur="30s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.15;0.3;0.15" dur="20s" repeatCount="indefinite" />
-      </circle>
-    </svg>
-  </Box>
-);
 
 interface InvitationScreenProps {
     guestName: string;
@@ -3023,7 +2678,33 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
     const [musicInitialized, setMusicInitialized] = useState<boolean>(false);
     const [autoplayBlocked, setAutoplayBlocked] = useState<boolean>(false);
-    
+    const [isExiting, setIsExiting] = useState<boolean>(false);
+
+    // ADD THESE LAZY LOADING HOOKS HERE:
+    const { ref: timelineRef, inView: timelineInView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true,
+        rootMargin: '100px'
+    });
+
+    const { ref: mapRef, inView: mapInView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true,
+        rootMargin: '100px'
+    });
+
+    const { ref: contactRef, inView: contactInView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true,
+        rootMargin: '50px'
+    });
+
+    const { ref: countdownRef, inView: countdownInView } = useInView({
+        threshold: 0.1,
+        triggerOnce: true,
+        rootMargin: '50px'
+    });
+
     // Translation state
     const [translatedContent, setTranslatedContent] = useState<{[key: string]: string}>({});
     const [isTranslating, setIsTranslating] = useState<boolean>(false);
@@ -3031,6 +2712,7 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     // Auto-translate content when language changes
     const translateContent = async (targetLang: 'kh' | 'en') => {
         if (!weddingInfo) return;
+  
         
         setIsTranslating(true);
         try {
@@ -3188,24 +2870,23 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
 
 
     return (
-        <Center
-            minH="100vh"
-            p={{ base: 2, sm: 4, md: 8 }}
-            animation="fade-in-slow 1.5s forwards"
-            // Parallax Khmer cultural artwork background
-            bgImage={{
-                base: "linear-gradient(to bottom, var(--chakra-colors-brand-ivory), var(--chakra-colors-brand-sandstone))", // Simpler bg for mobile
-                md: "url('/textures/khmer-artwork.jpg'), linear-gradient(to bottom, var(--chakra-colors-brand-ivory), var(--chakra-colors-brand-sandstone))"
-            }}
-            bgAttachment="fixed" // Fix parallax issues on mobile
-            bgBlendMode="multiply"
-            bgRepeat="no-repeat"
-            bgSize="cover"
-            bgPosition="center"
-            overflow="hidden" // Changed from "auto" to "hidden" to prevent horizontal scroll
-            position="relative"
-
-        >
+<Center
+    minH="100vh"
+    p={{ base: 2, sm: 4, md: 8 }}
+    animation="fade-in-slow 1.5s forwards"
+    // OPTIMIZED: Simpler backgrounds for mobile, full backgrounds for desktop
+    bgImage={{
+        base: "linear-gradient(135deg, #f5f3ed 0%, #bca798 100%)", // Simple gradient for mobile
+        md: "url('/textures/khmer-artwork.jpg'), linear-gradient(to bottom, var(--chakra-colors-brand-ivory), var(--chakra-colors-brand-sandstone))"
+    }}
+    bgAttachment={{ base: "scroll", md: "fixed" }} // Remove parallax on mobile
+    bgBlendMode="multiply"
+    bgRepeat="no-repeat"
+    bgSize={{ base: "cover", md: "cover" }}
+    bgPosition="center"
+    overflow="hidden"
+    position="relative"
+>
 {/* Top-right Controls - Language Switch & Music Toggle - FIXED POSITIONING */}
 <Box
     position="fixed"
@@ -3475,32 +3156,30 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     Your browser does not support the audio element.
 </audio>
 
-{/* Enhanced Traditional Khmer Background Art Elements */}
 <Box
   position="fixed"
-  top="40%"
-  left="51.5%"
+  top={{ base: "40%", md: "40%" }}
+  left="50%"
   transform="translate(-50%, -50%)"
   zIndex={-1}
-  w="150%"
-  h="100%"
+  w={{ base: "100vw", md: "150vw" }} // Smaller on mobile
+  h={{ base: "60vh", md: "100vh" }} // Smaller on mobile
   overflow="hidden"
   pointerEvents="none"
-  opacity={0.15}
-  willChange="transform"
-  sx={{
-    backfaceVisibility: "hidden",
-  }}
+  opacity={{ base: 0.08, md: 0.15 }} // Much more subtle on mobile
+  display={{ base: "none", sm: "block" }} // Hide completely on small mobile
 >
   <Image
     src="/vectors/background.svg"
-    alt="Angkor Wat Background"
+    alt="Background"
     objectFit="cover"
     w="100%"
     h="100%"
     filter="sepia(30%) hue-rotate(25deg) saturate(0.8)"
+    loading="lazy" // Add lazy loading
   />
 
+  {/* Fades */}
   <Box
     position="absolute"
     bottom="0"
@@ -3509,10 +3188,15 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     h="50%"
     bgGradient="linear(to-t, #fff 70%, transparent 100%)"
   />
+  <Box
+    position="absolute"
+    top="0"
+    left="0"
+    w="100%"
+    h="20%"
+    bgGradient="linear(to-b, #fff 20%, transparent 100%)"
+  />
 </Box>
-
- <MagicRootLines />
-
 
 {/* Bottom Left Texture - Wat SVG with Enhanced Fade */}
 <Box
@@ -3555,7 +3239,7 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
 <Box
   position="fixed"
   bottom={70}
-  right={-200}
+  right={-190}
   w={{ base: "75%", md: "70%" }}
   h={{ base: "55vh", md: "60vh" }}
   zIndex={-2}
@@ -3603,14 +3287,16 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
 {/* Root line left flower */}
 <Box
   position="fixed"
-  left={0}
-  bottom={0}
-  zIndex={-10}
+  left={{ base: "-100px", md: 0 }}      // 50px from left on mobile, 0 on desktop
+  bottom={{ base: "-10px", md: 0 }}    // 0px from bottom on mobile, 0 on desktop
+  zIndex={{ base: 2, md: -10 }} // Different z-index for mobile vs desktop
+  // Remove the display property - keep visible on all devices
+  mb={{ base: 0, md: 0 }} // Add bottom margin on mobile
 >
   <Image
     src='/vectors/rootright.svg'
     alt="Left Root Flower"
-    height="100vh"
+    height={{ base: "50vh", sm: "80vh", md: "100vh" }} // Progressive sizing: mobile -> tablet -> desktop
     width="auto"
     maxW="none"
     maxH="none"
@@ -3618,26 +3304,32 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     pos="relative"
     fallbackSrc="/vectors/rootright.svg"
     transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-    opacity={0.70}
+    opacity={{ base: 0.60, sm: 0.60, md: 0.70 }} // Different opacity levels
     sx={{
-      animation: `${neonGlow} 10s ease-in-out infinite`, // <<<< ADDED!
-      transform: "scaleX(-1)", // mirror
+      animation: `${neonGlow} 10s ease-in-out infinite`,
+      transform: { 
+        base: "scaleX(-1) translateY(30px) scale(0.8)", // Smaller and lower on mobile
+        sm: "scaleX(-1) translateY(20px) scale(0.9)", // Medium on tablet
+        md: "scaleX(-1)" // Normal position on desktop
+      },
     }}
   />
 </Box>
-
 
 {/* Root line right flower */}
 <Box
   position="fixed"
-  right={0}
-  bottom={0}
-  zIndex={-10}
+  right={{ base: "-100px", md: 0 }}  
+  bottom={{ base: "-10px", md: 0 }}    // 0px from bottom on mobile, 0 on desktop
+  zIndex={{ base: 2, md: -10 }} // Different z-index for mobile vs desktop
+  // Remove the display property - keep visible on all devices
+  mb={{ base: 0, md: 0 }} // Add bottom margin on mobile
+  // Remove the display property - keep visible on all devices
 >
   <Image
     src='/vectors/rootright.svg'
     alt="Right Root Flower"
-    height="100vh"
+    height={{ base: "-100vh", sm: "80vh", md: "100vh" }} // Progressive sizing: mobile -> tablet -> desktop
     width="auto"
     maxW="none"
     maxH="none"
@@ -3645,15 +3337,17 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     pos="relative"
     fallbackSrc="/vectors/rootright.svg"
     transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-    opacity={0.70}
+    opacity={{ base: 0.50, sm: 0.60, md: 0.70 }} // Different opacity levels
     sx={{
-      animation: `${neonGlow} 10s ease-in-out infinite`, // same slow breathing!
-      // No mirror needed
+      animation: `${neonGlow} 10s ease-in-out infinite`,
+      transform: { 
+        base: "translateY(30px) scale(0.8)", // Smaller and lower on mobile
+        sm: "translateY(20px) scale(0.9)", // Medium on tablet
+        md: "none" // Normal position on desktop
+      },
     }}
   />
 </Box>
- 
-
             {/* Full-screen Invitation Content */}
             <Box
                 display="flex"
@@ -4350,8 +4044,8 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                 )}
                 {isRSVPSuccess && <Checkmark message={content.rsvpSuccess} />}
 
-                {/* Enhanced Google Maps Section - moved to bottom */}
-                {weddingInfo?.venueMapLink && (
+{/* Enhanced Google Maps Section - moved to bottom */}
+                {weddingInfo?.venueMapLink ? (
                     <Box 
                         mt={{ base: 8, md: 10 }} 
                         mb={{ base: 6, md: 8 }}
@@ -4489,6 +4183,7 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                             flexWrap="wrap"
                             gap={3}
                         >
+                            
                             <Button
                                 as="a"
                                 href={weddingInfo.venueMapLink}
@@ -4553,9 +4248,26 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                             </Button>
                         </HStack>
                     </Box>
+                ) : (
+                    // Loading placeholder
+                    <Box
+                        h="400px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        bg="rgba(255, 255, 255, 0.1)"
+                        borderRadius="xl"
+                    >
+                        <VStack spacing={4}>
+                            <Spinner size="lg" color="brand.gold" />
+                            <Text fontFamily="khmerBody" color="brand.textPrimary" fontSize="sm">
+                                {lang === 'kh' ? 'កំពុងផ្ទុកផែនទី...' : 'Loading map...'}
+                            </Text>
+                        </VStack>
+                    </Box>
                 )}
 
-                {/* Enhanced Ceremony Timeline Section */}
+{/* Enhanced Ceremony Timeline Section */}
                 <Box 
                     mt={{ base: 8, md: 12 }} 
                     mb={{ base: 6, md: 8 }}
@@ -5194,6 +4906,7 @@ export default function InvitePage({ params }: { params: Promise<{ slug: string 
     const [lang, setLang] = useState<'kh' | 'en'>('kh');
     const [isRSVPSuccess, setIsRSVPSuccess] = useState<boolean>(false);
     const [guestRef, setGuestRef] = useState<any>(null);
+    
 
     // Fetch guest and wedding info based on slug
     useEffect(() => {
@@ -5323,6 +5036,8 @@ export default function InvitePage({ params }: { params: Promise<{ slug: string 
         setIsRSVPSuccess(true);
         setTimeout(() => setIsRSVPSuccess(false), 5000);
     };
+
+
 
     // Create theme with dynamic font
     const theme = createTheme(weddingInfo?.font);
