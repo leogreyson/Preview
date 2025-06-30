@@ -9,6 +9,24 @@ export default function GlobalStyles() {
   return (
   
     <style>{`
+      .animated-element {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0); /* Force hardware acceleration */
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* For your keyframe animations */
+@keyframes optimized-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
       @import url('https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moulpali&display=swap');
       :root {
         --imperial-gold: #a88c5a;
