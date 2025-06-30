@@ -35,6 +35,7 @@ import {
     ModalBody,
     Flex,
     Image,
+    Skeleton,
 } from "@chakra-ui/react";
 import { Global, keyframes } from '@emotion/react';
 import QRCode from 'react-qr-code';
@@ -42,14 +43,14 @@ import WavyLineBackground from "@/WavyLineBackground";
 
 
 // Enhanced Premium Animations with Traditional Khmer Elements
-const fadeInUp = keyframes`
+const OptimizedFadeInUp = keyframes`
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.95);
+    transform: translate3d(0, 20px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 `;
 
@@ -113,7 +114,7 @@ const neonGlow = keyframes`
       contrast(110%)
   }
   50% {
-    filter: brightness(1.5)
+    filter: brightness(2)
       saturate(130%) 
       invert(80%) 
       sepia(69%) 
@@ -121,8 +122,8 @@ const neonGlow = keyframes`
       hue-rotate(6deg) 
       brightness(130%) 
       contrast(150%)
-      drop-shadow(0 0 4px #fff700)
-      drop-shadow(0 0 7px #fff700);
+      drop-shadow(0 0 2px #fff700)
+      drop-shadow(0 0 4px #fff700);
   }
 `;
 
@@ -237,515 +238,76 @@ const sparkle = keyframes`
   }
 `;
 
-// Enhanced Premium Global Styles
+// Update the GlobalKeyframes component around line 260:
+
 const GlobalKeyframes = () => (
     <Global
         styles={`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@400;500;600;700&display=swap');
-        
-        @keyframes float-up {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Enhanced backdrop filter support with transparency */
+        @supports (backdrop-filter: blur(20px)) {
+            .glass-card {
+                backdrop-filter: blur(60px) saturate(1.2) brightness(1.05) !important;
+                background: rgba(255, 255, 255, 0.02) !important; /* VERY transparent */
+                border: none !important;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04) !important;
+            }
         }
         
-        /* Remove the malformed CSS comments and keyframes definitions here */
-        /* Keep only the actual CSS rules */
-        
-        @keyframes fade-in-slow {
-            from { opacity: 0; transform: scale(0.95) translateY(30px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        /* Fallback for browsers without backdrop-filter support */
+        @supports not (backdrop-filter: blur(20px)) {
+            .glass-card {
+                background: rgba(255, 255, 255, 0.75) !important; /* More opaque fallback */
+                border: none !important;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            }
         }
+        
+        /* Mobile optimizations with ultra transparency */
+        @media (max-width: 768px) {
+            .glass-card {
+                backdrop-filter: blur(20px) saturate(1.1) opacity: 0.3 !important;
+                background: rgba(255, 255, 255, 0.01) !important; /* ULTRA transparent on mobile */
+                border: none !important;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.03) !important;
+            }
 
-        /* Premium fade animations with stagger support */
-        @keyframes fade-in-slow {
-            from { opacity: 0; transform: scale(0.95) translateY(30px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        @keyframes gentle-float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(2deg); }
-        }
-        
-        @keyframes shimmer-text {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        
-        @keyframes particle-float {
-            0%, 100% { 
-                transform: translateY(0px) rotate(0deg); 
-                opacity: 0.6; 
-                scale: 1;
-            }
-            33% { 
-                transform: translateY(-15px) rotate(120deg); 
-                opacity: 1; 
-                scale: 1.2;
-            }
-            66% { 
-                transform: translateY(-8px) rotate(240deg); 
-                opacity: 0.8; 
-                scale: 1.1;
+            /* Ultra transparent premium cards */
+            .premium-card {
+                border: none !important;
+                background: rgba(255, 255, 255, 0.01) !important; /* ULTRA transparent */
+                backdrop-filter: blur(25px) !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
             }
         }
         
-        /* Luxury scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(196, 166, 106, 0.1);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #c4a66a, #b8986b);
-            border-radius: 10px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #d4af37, #c4a66a);
-        }
-        
-        /* Premium glassmorphism with depth */
-        .glass-card {
-            backdrop-filter: blur(25px) saturate(200%);
-            -webkit-backdrop-filter: blur(25px) saturate(200%);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 
-                0 8px 32px 0 rgba(31, 38, 135, 0.37),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .glass-card:hover {
-            backdrop-filter: blur(30px) saturate(220%);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
-            box-shadow: 
-                0 16px 64px 0 rgba(31, 38, 135, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        /* Premium text effects with Khmer traditional elements */
-        .gradient-text-luxury {
-            background: linear-gradient(135deg, #c4a66a 0%, #d4af37 15%, #f4e4bc 30%, #fff8e1 50%, #f4e4bc 70%, #d4af37 85%, #c4a66a 100%);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer-text 4s ease-in-out infinite;
-            filter: drop-shadow(0 2px 4px rgba(196, 166, 106, 0.3));
-        }
-
-        /* Khmer traditional text glow */
-        .khmer-text-glow {
-            text-shadow: 
-                0 0 10px rgba(212, 175, 55, 0.6),
-                0 0 20px rgba(196, 166, 106, 0.4),
-                0 0 30px rgba(255, 215, 0, 0.2);
-            animation: khmer-ornament-glow 3s ease-in-out infinite;
-        }
-
-        @keyframes khmer-ornament-glow {
-            0%, 100% {
-                text-shadow: 
-                    0 0 10px rgba(212, 175, 55, 0.6),
-                    0 0 20px rgba(196, 166, 106, 0.4),
-                    0 0 30px rgba(255, 215, 0, 0.2);
+        /* Desktop keeps strong blur but ultra transparency */
+        @media (min-width: 769px) {
+            .glass-card {
+                backdrop-filter: blur(60px) saturate(1.2) brightness(1.05) !important;
+                background: rgba(255, 255, 255, 0.02) !important;
+                border: none !important;
             }
-            50% {
-                text-shadow: 
-                    0 0 20px rgba(212, 175, 55, 0.9),
-                    0 0 30px rgba(196, 166, 106, 0.7),
-                    0 0 40px rgba(255, 215, 0, 0.5),
-                    0 0 50px rgba(255, 248, 225, 0.3);
-            }
-        }
-
-        /* Sacred geometry pattern overlay */
-        .sacred-geometry-bg {
-            background-image: 
-                radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.1) 0%, transparent 25%),
-                radial-gradient(circle at 75% 75%, rgba(196, 166, 106, 0.1) 0%, transparent 25%),
-                radial-gradient(circle at 75% 25%, rgba(244, 228, 188, 0.1) 0%, transparent 25%),
-                radial-gradient(circle at 25% 75%, rgba(255, 215, 0, 0.1) 0%, transparent 25%);
-            background-size: 40px 40px;
-            animation: sacred-geometry-rotate 20s linear infinite;
-        }
-
-        @keyframes sacred-geometry-rotate {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 40px 40px; }
-        }
-
-        /* Traditional Khmer border patterns */
-        .khmer-border {
-            border-image: linear-gradient(45deg, 
-                #d4af37 0%, 
-                #c4a66a 25%, 
-                #f4e4bc 50%, 
-                #c4a66a 75%, 
-                #d4af37 100%
-            ) 1;
-            border-style: solid;
-            border-width: 2px;
-            position: relative;
-        }
-
-        .khmer-border::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            background: linear-gradient(45deg, 
-                transparent 0%, 
-                rgba(212, 175, 55, 0.2) 25%, 
-                rgba(196, 166, 106, 0.1) 50%, 
-                rgba(212, 175, 55, 0.2) 75%, 
-                transparent 100%
-            );
-            border-radius: inherit;
-            z-index: -1;
-            animation: lotus-bloom 4s ease-in-out infinite;
-        }
-
-        @keyframes lotus-bloom {
-            0%, 100% { 
-                opacity: 0.5; 
-                transform: scale(1) rotate(0deg); 
-            }
-            50% { 
-                opacity: 1; 
-                transform: scale(1.05) rotate(180deg); 
-            }
-        }
-        
-        /* Floating particles with luxury feel */
-        .floating-particles-luxury::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(3px 3px at 25px 35px, rgba(196, 166, 106, 0.6), transparent),
-                radial-gradient(2px 2px at 45px 75px, rgba(212, 175, 55, 0.5), transparent),
-                radial-gradient(2px 2px at 85px 45px, rgba(244, 228, 188, 0.4), transparent),
-                radial-gradient(1px 1px at 125px 85px, rgba(255, 248, 225, 0.7), transparent),
-                radial-gradient(1px 1px at 160px 25px, rgba(196, 166, 106, 0.5), transparent);
-            background-repeat: repeat;
-            background-size: 180px 120px;
-            animation: particle-float 6s ease-in-out infinite;
-            pointer-events: none;
-            opacity: 0.8;
-        }
-        
-        /* Luxury button hover effects */
-        .luxury-button {
-            background: linear-gradient(135deg, #c4a66a, #b8986b);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(196, 166, 106, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .luxury-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .luxury-button:hover::before {
-            left: 100%;
-        }
-        
-        .luxury-button:hover {
-            background: linear-gradient(135deg, #d4af37, #c4a66a);
-            box-shadow: 0 8px 30px rgba(196, 166, 106, 0.5);
-            transform: translateY(-2px) scale(1.02);
-        }
-        
-        /* Elegant section animations */
-        .animate-fade-in-up {
-            animation: fade-in-slow 0.8s ease-out forwards;
-        }
-        
-        .animate-fade-in-up-delay-1 {
-            animation: fade-in-slow 0.8s ease-out 0.2s forwards;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-2 {
-            animation: fade-in-slow 0.8s ease-out 0.4s forwards;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-3 {
-            animation: fade-in-slow 0.8s ease-out 0.6s forwards;
-            opacity: 0;
-        }
-        
-        /* Premium card hover */
-        .premium-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .premium-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Luxury monogram animation */
-        .luxury-monogram {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .luxury-monogram:hover {
-            transform: scale(1.05) rotate(2deg);
-            filter: drop-shadow(0 8px 20px rgba(196, 166, 106, 0.4));
-        }
-        /* Premium micro-interactions and button effects */
-        .premium-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .premium-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(196, 166, 106, 0.2);
-        }
-        
-        .premium-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-        
-        .premium-card:hover::before {
-            left: 100%;
-        }
-        
-        .animate-fade-in-up {
-            animation: fade-in-slow 1s forwards;
-        }
-        
-        .animate-fade-in-up-delay-1 {
-            animation: fade-in-slow 1.2s forwards;
-            animation-delay: 0.2s;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-2 {
-            animation: fade-in-slow 1.4s forwards;
-            animation-delay: 0.4s;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-3 {
-            animation: fade-in-slow 1.6s forwards;
-            animation-delay: 0.6s;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-4 {
-            animation: fade-in-slow 1.8s forwards;
-            animation-delay: 0.8s;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-5 {
-            animation: fade-in-slow 2s forwards;
-            animation-delay: 1s;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-6 {
-            animation: fade-in-slow 2.2s forwards;
-            animation-delay: 1.2s;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-7 {
-            animation: fade-in-slow 2.4s forwards;
-            animation-delay: 1.4s;
-            opacity: 0;
-        }
-        
-        .animate-fade-in-up-delay-8 {
-            animation: fade-in-slow 2.6s forwards;
-            animation-delay: 1.6s;
-            opacity: 0;
-        }
-        
-        /* Enhanced RSVP button styling */
-        .rsvp-button {
-            background: linear-gradient(135deg, #c4a66a, #b8986b);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 25px rgba(196, 166, 106, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            transform-style: preserve-3d;
-        }
-        
-        .rsvp-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s;
-        }
-        
-        .rsvp-button:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 15px 35px rgba(196, 166, 106, 0.5);
-            background: linear-gradient(135deg, #d4af37, #c4a66a);
-        }
-        
-        .rsvp-button:hover::before {
-            left: 100%;
-        }
-        
-        .rsvp-button:active {
-            transform: translateY(-2px) scale(1.02);
-        }
-        
-        /* QR Code enhancement */
-        .qr-container {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
-            backdrop-filter: blur(10px);
-            border: 3px solid rgba(196, 166, 106, 0.3);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(196, 166, 106, 0.2);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .qr-container::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #c4a66a, #d4af37, #c4a66a);
-            background-size: 300% 300%;
-            border-radius: 20px;
-            z-index: -1;
-            animation: gradientShift 3s ease infinite;
-        }
-        
-        .qr-container:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(196, 166, 106, 0.3);
-        }
-        /* Enhanced Traditional Khmer Elements */
-        .traditional-khmer-border {
-            background: linear-gradient(45deg, 
-                rgba(196, 166, 106, 0.3) 0%, 
-                rgba(212, 175, 55, 0.2) 25%, 
-                rgba(244, 228, 188, 0.1) 50%, 
-                rgba(212, 175, 55, 0.2) 75%, 
-                rgba(196, 166, 106, 0.3) 100%);
-            background-size: 400% 400%;
-            animation: traditionalShimmer 6s ease-in-out infinite;
-            border-radius: 12px;
-            padding: 2px;
-        }
-        
-        @keyframes traditionalShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .khmer-ornament::before {
-            content: '☸';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            color: rgba(196, 166, 106, 0.6);
-            animation: gentleRotate 8s ease-in-out infinite;
-        }
-        
-        @keyframes gentleRotate {
-            0%, 100% { transform: translateX(-50%) rotate(0deg); }
-            50% { transform: translateX(-50%) rotate(180deg); }
-        }
-        
-        .lotus-glow {
-            background: radial-gradient(circle at center, 
-                rgba(196, 166, 106, 0.2) 0%, 
-                rgba(212, 175, 55, 0.1) 30%, 
-                transparent 70%);
-            animation: lotusBloom 4s ease-in-out infinite;
-        }
-        
-        @keyframes lotusBloom {
-            0%, 100% { 
-                transform: scale(1);
-                opacity: 0.6;
-            }
-            50% { 
-                transform: scale(1.1);
-                opacity: 0.8;
-            }
-        }
-        
-        /* Traditional Khmer Text Enhancement */
-        .khmer-traditional-text {
-            text-shadow: 
-                0 1px 0 rgba(196, 166, 106, 0.5),
-                0 2px 4px rgba(0, 0, 0, 0.1),
-                0 0 20px rgba(196, 166, 106, 0.3);
-            filter: drop-shadow(0 2px 4px rgba(196, 166, 106, 0.2));
-        }
-        
-        /* Sacred Geometry Pattern */
-        .sacred-pattern {
-            background-image: 
-                radial-gradient(circle at 25% 25%, rgba(196, 166, 106, 0.1) 2px, transparent 2px),
-                radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.1) 2px, transparent 2px),
-                radial-gradient(circle at 25% 75%, rgba(244, 228, 188, 0.1) 1px, transparent 1px),
-                radial-gradient(circle at 75% 25%, rgba(196, 166, 106, 0.1) 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-position: 0 0, 0 0, 20px 20px, 20px 20px;
-            animation: sacredFlow 12s linear infinite;
-        }
-        
-        @keyframes sacredFlow {
-            0% { background-position: 0 0, 0 0, 20px 20px, 20px 20px; }
-            100% { background-position: 40px 40px, 40px 40px, 60px 60px, 60px 60px; }
-        }
             
+            .premium-card {
+                background: rgba(255, 255, 255, 0.02) !important;
+                backdrop-filter: blur(30px) !important;
+            }
+        }
         
+        /* Remove all card borders and make ultra transparent */
+        .premium-card {
+            border: none !important;
+            background: rgba(255, 255, 255, 0.02) !important;
+            backdrop-filter: blur(30px) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+        }
+        
+        .khmer-border {
+            border: none !important;
+        }
         `}
     />
 );
-
 // Lazy load heavy components
 const LazyCountdownTimer = dynamic(() => Promise.resolve(CountdownTimer), {
   loading: () => (
@@ -765,14 +327,6 @@ const LazyCountdownTimer = dynamic(() => Promise.resolve(CountdownTimer), {
   ssr: false
 });
 
-const LazyRSVPForm = dynamic(() => Promise.resolve(RSVPForm), {
-  loading: () => (
-    <Center>
-      <Spinner size="xl" color="brand.gold" />
-    </Center>
-  ),
-  ssr: false
-});
 
 const LazyMapSection = dynamic(() => import('./components/MapSection'), {
   loading: () => (
@@ -829,7 +383,7 @@ const LazyImage: React.FC<{
               <Spinner size="md" color="brand.gold" />
             </Box>
           )}
-          <Image
+          <LazyImage
             src={hasError ? (fallbackSrc || src) : src}
             alt={alt}
             onLoad={() => setIsLoaded(true)}
@@ -1520,10 +1074,7 @@ const KhmerSacredGeometry: React.FC = () => (
 
 // Traditional Khmer Ornamental Divider
 // Replace the KhmerOrnamentalDivider component (around line 1379)
-
-// Repla// Replace the KhmerOrnamentalDivider component (around line 1381)
-
-// Repla// Replace the KhmerOrnamentalDivider component (starting around line 1383)
+// Update the KhmerOrnamentalDivider component around line 1081:
 
 const KhmerOrnamentalDivider: React.FC = () => (
     <Box 
@@ -1535,24 +1086,24 @@ const KhmerOrnamentalDivider: React.FC = () => (
         w="100%"
         maxW="500px"
         mx="auto"
-        h="120px" // Increased height for breathing room
+        h="20px"
     >
         {/* Enhanced Background decorative elements with lotus curves */}
         <Box
             position="absolute"
             inset={0}
             zIndex={0}
-            opacity={0.08} // Very subtle lotus background
+            opacity={0.08}
             pointerEvents="none"
         >
-            {/* Lotus curve pattern behind the line */}
+            {/* Lotus curve pattern behind */}
             <Box
                 position="absolute"
                 top="50%"
                 left="50%"
                 transform="translate(-50%, -50%)"
-                w="80%"
-                h="80px"
+                w="50%"
+                h="50px"
                 background="url('/vectors/lotus-curve.svg'), url('/vectors/lineup.svg')"
                 backgroundSize="contain, contain"
                 backgroundRepeat="no-repeat, no-repeat"
@@ -1563,7 +1114,7 @@ const KhmerOrnamentalDivider: React.FC = () => (
             {/* Subtle filigree scroll pattern */}
             <Box
                 position="absolute"
-                top="40%"
+                top="20%"
                 left="20%"
                 right="20%"
                 height="40px"
@@ -1599,7 +1150,7 @@ const KhmerOrnamentalDivider: React.FC = () => (
             <Image
                 src="/vectors/lineup.svg"
                 alt="Ornamental Divider"
-                width={{ base: "140px", md: "180px", lg: "220px" }} // Increased sizes
+                width={{ base: "140px", md: "180px", lg: "220px" }}
                 height="auto"
                 filter="brightness(1.2) saturate(1.3) hue-rotate(10deg)"
                 css={{
@@ -1624,13 +1175,13 @@ const KhmerOrnamentalDivider: React.FC = () => (
                 display="grid"
                 gridTemplateColumns="repeat(3, 1fr)"
                 gridTemplateRows="repeat(3, 1fr)"
-                gap="5px" // Slightly increased spacing
+                gap="5px"
                 zIndex={4}
             >
                 {Array.from({ length: 9 }).map((_, i) => (
                     <Box
                         key={i}
-                        w="4px" // Slightly larger dots
+                        w="4px"
                         h="4px"
                         bg="#FFD700"
                         borderRadius="full"
@@ -1644,15 +1195,16 @@ const KhmerOrnamentalDivider: React.FC = () => (
             </Box>
         </Box>
 
-        {/* Enhanced Left horizontal line with increased opacity */}
+        {/* REMOVED: Left and Right horizontal lines */}
+        {/* These are the lines you wanted removed:
         <Box
             position="absolute"
             left="0"
             top="50%"
             transform="translateY(-50%)"
             width="42%"
-            height="3px" // Slightly thicker
-            background="linear-gradient(to right, transparent, rgba(255, 215, 0, 0.9), rgba(255, 215, 0, 0.5))" // Increased opacity
+            height="3px"
+            background="linear-gradient(to right, transparent, rgba(255, 215, 0, 0.9), rgba(255, 215, 0, 0.5))"
             borderRadius="full"
             zIndex={1}
             css={{
@@ -1660,15 +1212,14 @@ const KhmerOrnamentalDivider: React.FC = () => (
             }}
         />
 
-        {/* Enhanced Right horizontal line with increased opacity */}
         <Box
             position="absolute"
             right="0"
             top="50%"
             transform="translateY(-50%)"
             width="42%"
-            height="3px" // Slightly thicker
-            background="linear-gradient(to left, transparent, rgba(255, 215, 0, 0.9), rgba(255, 215, 0, 0.5))" // Increased opacity
+            height="3px"
+            background="linear-gradient(to left, transparent, rgba(255, 215, 0, 0.9), rgba(255, 215, 0, 0.5))"
             borderRadius="full"
             zIndex={1}
             css={{
@@ -1676,37 +1227,38 @@ const KhmerOrnamentalDivider: React.FC = () => (
                 animationDelay: '2s',
             }}
         />
+        */}
 
         {/* Enhanced Background decorative elements with better positioning */}
         <Box
             position="absolute"
             inset={0}
             zIndex={-1}
-            opacity={0.15} // Keeping the subtle background
+            opacity={0.15}
             pointerEvents="none"
         >
-            {/* Top background pattern - pushed up more */}
+            {/* Top background pattern */}
             <Box
                 position="absolute"
-                top="-30px" // Moved up 10px more
+                top="-30px"
                 left="15%"
                 right="15%"
-                height="50px" // Increased height
+                height="50px"
                 backgroundImage="url('/vectors/lineup.svg')"
                 backgroundSize="contain"
                 backgroundRepeat="no-repeat"
                 backgroundPosition="center"
-                transform="scale(0.7)"
+                transform="scale(1.2) scaleY(-1)"
                 filter="blur(1px)"
             />
             
-            {/* Bottom background pattern - pushed down more */}
+            {/* Bottom background pattern */}
             <Box
                 position="absolute"
-                bottom="-35px" // Moved down 15px more for breathing room
+                bottom="-35px"
                 left="15%"
                 right="15%"
-                height="50px" // Increased height
+                height="50px"
                 backgroundImage="url('/vectors/lineup.svg')"
                 backgroundSize="contain"
                 backgroundRepeat="no-repeat"
@@ -1716,13 +1268,13 @@ const KhmerOrnamentalDivider: React.FC = () => (
             />
         </Box>
 
-        {/* Enhanced Side decorative sparkles with temple-arch vibes */}
+        {/* Enhanced Side decorative sparkles */}
         <Box
             position="absolute"
-            left="-30px" // Moved out slightly more
+            left="-30px"
             top="50%"
             transform="translateY(-50%)"
-            w="10px" // Larger sparkles
+            w="10px"
             h="10px"
             bg="#FFD700"
             borderRadius="full"
@@ -1745,10 +1297,10 @@ const KhmerOrnamentalDivider: React.FC = () => (
         />
         <Box
             position="absolute"
-            right="-30px" // Moved out slightly more
+            right="-30px"
             top="50%"
             transform="translateY(-50%)"
-            w="10px" // Larger sparkles
+            w="10px"
             h="10px"
             bg="#FFD700"
             borderRadius="full"
@@ -1971,52 +1523,44 @@ const CountdownTimer: React.FC<{ targetDate: string; lang: 'kh' | 'en' }> = ({ t
         <Box
             className="animate-fade-in-up-delay-6"
             bg="linear-gradient(135deg, rgba(196, 166, 106, 0.1), rgba(212, 175, 55, 0.05))"
-            borderRadius="2xl"
-            p={{ base: 6, md: 8 }}
+            borderRadius="xl" // Smaller border radius on mobile
+            p={{ base: 3, md: 6 }} // Much smaller padding on mobile
             border="1px solid rgba(196, 166, 106, 0.2)"
-            backdropFilter="blur(10px)"
+            backdropFilter={{ base: "none", md: "blur(10px)" }} // Remove blur on mobile
             position="relative"
             overflow="hidden"
         >
             <Text
                 textAlign="center"
-                fontSize={{ base: 'lg', md: 'xl' }}
+                fontSize={{ base: 'sm', md: 'lg' }} // Much smaller on mobile
                 fontFamily="khmerHeading"
                 fontWeight="bold"
                 color="brand.maroon"
-                mb={6}
+                mb={{ base: 3, md: 4 }}
             >
                 {lang === 'kh' ? 'រាប់ថ្ងៃ' : 'Countdown'}
             </Text>
             
-            <HStack justify="center" spacing={{ base: 3, md: 6 }} wrap="wrap">
+            <HStack justify="center" spacing={{ base: 2, md: 4 }} wrap="wrap"> {/* Smaller spacing */}
                 {/* Days */}
-                <VStack spacing={2}>
+                <VStack spacing={1}>
                     <Box
                         bg="linear-gradient(135deg, #c4a66a, #b8986b)"
                         color="white"
-                        borderRadius="xl"
-                        p={{ base: 4, md: 6 }}
-                        minW={{ base: "60px", md: "80px" }}
+                        borderRadius="lg" // Smaller radius
+                        p={{ base: 2, md: 4 }} // Much smaller padding
+                        minW={{ base: "45px", md: "60px" }} // Smaller minimum width
                         textAlign="center"
-                        boxShadow="0 8px 25px rgba(196, 166, 106, 0.3)"
+                        boxShadow={{ base: "none", md: "0 8px 25px rgba(196, 166, 106, 0.3)" }} // Remove shadow on mobile
                         position="relative"
-                        _before={{
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent)',
-                            borderRadius: 'xl',
-                        }}
+                        // Remove hardware acceleration properties on mobile
+                        willChange={{ base: "auto", md: "transform" }}
                     >
-                        <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold" fontFamily="khmerBody">
+                        <Text fontSize={{ base: 'md', md: 'xl' }} fontWeight="bold" fontFamily="khmerBody">
                             {formatNumber(timeLeft.days)}
                         </Text>
                     </Box>
-                    <Text fontSize={{ base: 'xs', md: 'sm' }} fontFamily="khmerBody" color="brand.textPrimary" fontWeight="medium">
+                    <Text fontSize={{ base: '2xs', md: 'xs' }} fontFamily="khmerBody" color="brand.textPrimary" fontWeight="medium">
                         {lang === 'kh' ? 'ថ្ងៃ' : 'Days'}
                     </Text>
                 </VStack>
@@ -2401,6 +1945,18 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ onClose, lang, guestRef }) => {
     );
 };
 
+// NOW add the LazyRSVPForm wrapper AFTER the RSVPForm component:
+const LazyRSVPForm = dynamic(() => Promise.resolve(RSVPForm), {
+  loading: () => (
+    <VStack spacing={4} w="300px">
+      <Skeleton height="40px" width="100%" borderRadius="md" />
+      <Skeleton height="80px" width="100%" borderRadius="md" />
+      <Skeleton height="40px" width="120px" borderRadius="full" />
+    </VStack>
+  ),
+  ssr: false
+});
+
 // --- CEREMONIAL FLOW COMPONENTS --- //
 interface EntranceScreenProps {
     guestName: string;
@@ -2440,13 +1996,29 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
             clearTimeout(buttonTimer);
         };
     }, []);
+    
+    useEffect(() => {
+    // ULTRA FAST - everything appears almost together
+    const quickTimer = setTimeout(() => {
+        setShowMonogram(true);
+        setShowTitle(true);
+        setShowGuestName(true);
+        setShowQuote(true);
+        setContentVisible(true);
+        setShowButton(true);
+    }, 100); // Everything appears after just 100ms
+    
+    return () => {
+        clearTimeout(quickTimer);
+    };
+}, []);
 
     const handleEnter = () => {
         setIsExiting(true);
-        // Add delay for exit animation
+        // FASTER exit animation
         setTimeout(() => {
             onEnter();
-        }, 600); // 600ms for smooth exit
+        }, 800); // REDUCED from 500ms
     };
 
     return (
@@ -2463,42 +2035,42 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
             bgSize="auto, cover"
             bgRepeat="repeat, no-repeat"
             bgPosition="center, center"
-            // Add exit animation
-            opacity={isExiting ? 0 : 1}
-            transform={isExiting ? 'scale(0.95)' : 'scale(1)'}
-            transition="all 0.8s cubic-bezier(0.4, 0, 0.2, 1)"
-            _after={{
-                content: "''",
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-                height: "80%",
-                backgroundImage: "url('/vectors/angkorwat.svg')",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center bottom",
-                opacity: 0.15,
-                pointerEvents: "none",
-                zIndex: 0,
-                maskImage: "linear-gradient(to top, transparent 0%, black 20%, black 90%, transparent 100%)",
-                WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 20%, black 80%, transparent 100%)",
-            }}
-        >
-            <Smoke />
+            // FASTER exit animation
+    opacity={isExiting ? 0 : 1}
+    transform={isExiting ? 'scale(0.95) translateY(-20px)' : 'scale(1) translateY(0)'}
+    filter={isExiting ? 'blur(2px)' : 'blur(0px)'} // ADD: blur effect on exit
+    transition="all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)" // SLOWER: 0.8s with smooth easing
+    _after={{
+        content: "''",
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        height: "80%",
+        backgroundImage: "url('/vectors/angkorwat.svg')",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center bottom",
+        opacity: 0.15,
+        pointerEvents: "none",
+        zIndex: 0,
+        maskImage: "linear-gradient(to top, transparent 0%, black 20%, black 90%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 20%, black 80%, transparent 100%)",
+    }}
+>
 
             <VStack
                 zIndex={1}
                 spacing={5}
                 textAlign="center"
-                bg="rgba(255, 255, 255, 0.25)"
-                backdropFilter="blur(12px)"
+                bg="rgba(255, 255, 255, 0.35)"
+                backdropFilter="blur(15px)"
                 p={{ base: 8, md: 12 }}
                 borderRadius="xl"
                 boxShadow="0 15px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255, 255, 255, 0.4)"
                 border="1px solid rgba(255, 255, 255, 0.3)"
                 maxW="lg"
-                // Enhanced container animation with exit state
+               // FASTER container animation
                 opacity={isContentVisible && !isExiting ? 1 : 0}
                 transform={
                     isExiting 
@@ -2518,7 +2090,7 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                 >
                     <Heading 
                         as="h2" 
-                        fontSize={{ base: '1.4rem', md: '1.8rem' }} 
+                        fontSize={{ base: '2rem', md: '1.8rem' }} 
                         fontFamily={currentLang === 'kh' ? "Moul" : "WeddingFont"} 
                         color="brand.maroon" 
                         letterSpacing="0.08em" 
@@ -2538,7 +2110,7 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                     transition="all 1.2s cubic-bezier(0.4, 0, 0.2, 1)"
                 >
                     <Text
-                        fontSize={{ base: '3.5xl', md: '4.5xl' }}
+                        fontSize={{ base: '2xl', md: '4.5xl' }}
                         fontFamily="khmerSubheading"
                         color="brand.gold"
                         fontWeight="bold"
@@ -2578,20 +2150,20 @@ const EntranceScreen: React.FC<EntranceScreenProps> = ({ guestName, onEnter, lan
                     transition="all 1.5s cubic-bezier(0.4, 0, 0.2, 1)"
                 >
                     <Button
-                        onClick={onEnter}
+                        onClick={handleEnter}
                         bg="linear-gradient(135deg, #FFD700 0%, #FFA500 20%, #FFD700 40%, #B8860B 60%, #FFD700 80%, #DAA520 100%)"
                         color="white"
                         px={{ base: 14, md: 20 }}
                         py={{ base: 7, md: 10 }}
                         mt={8}
                         borderRadius="full"
-                        fontFamily="khmerBody"
+                        fontFamily={lang === 'kh' ? 'moul' : 'WeddingFont'}
                         fontSize={{ base: 'xl', md: '2xl' }}
                         fontWeight="900"
                         letterSpacing="1px"
                         boxShadow="0 8px 20px rgba(255, 215, 0, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 215, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.1)"
                         border="2px solid #FFD700"
-                        textShadow="0 2px 4px rgba(0,0,0,0.3), 0 1px 0px rgba(255,255,255,0.2)"
+                       // textShadow="0 2px 4px rgba(0,0,0,0.3), 0 1px 0px rgba(255,255,255,0.2)"
                         position="relative"
                         overflow="hidden"
                         zIndex={10}
@@ -2678,7 +2250,17 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
     const [musicInitialized, setMusicInitialized] = useState<boolean>(false);
     const [autoplayBlocked, setAutoplayBlocked] = useState<boolean>(false);
-    const [isExiting, setIsExiting] = useState<boolean>(false);
+    // ADD: State for invitation screen fade-in animation
+    const [isVisible, setIsVisible] = useState<boolean>(false);
+
+        useEffect(() => {
+        // Small delay then trigger fade-in
+        const timer = setTimeout(() => {
+            setIsVisible(true);
+        }, 100); // Short delay to ensure smooth transition
+        
+        return () => clearTimeout(timer);
+    }, []);
 
     // ADD THESE LAZY LOADING HOOKS HERE:
     const { ref: timelineRef, inView: timelineInView } = useInView({
@@ -2870,22 +2452,56 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
 
 
     return (
+// Update the main Center container around line 2900:
+
 <Center
     minH="100vh"
     p={{ base: 2, sm: 4, md: 8 }}
-    animation="fade-in-slow 1.5s forwards"
-    // OPTIMIZED: Simpler backgrounds for mobile, full backgrounds for desktop
+    // ENHANCED: Add textured backgrounds for mobile similar to desktop
     bgImage={{
-        base: "linear-gradient(135deg, #f5f3ed 0%, #bca798 100%)", // Simple gradient for mobile
-        md: "url('/textures/khmer-artwork.jpg'), linear-gradient(to bottom, var(--chakra-colors-brand-ivory), var(--chakra-colors-brand-sandstone))"
+        base: "url('/textures/silk-texture.png'), url('/textures/paper-texture.jpg'), linear-gradient(135deg, rgba(245, 243, 237, 0.95) 0%, rgba(188, 167, 152, 0.9) 100%)", 
+        md: "url('/textures/khmer-artwork.jpg'), url('/textures/silk-texture.png'), linear-gradient(to bottom, var(--chakra-colors-brand-ivory), var(--chakra-colors-brand-sandstone))"
     }}
-    bgAttachment={{ base: "scroll", md: "fixed" }} // Remove parallax on mobile
-    bgBlendMode="multiply"
-    bgRepeat="no-repeat"
-    bgSize={{ base: "cover", md: "cover" }}
-    bgPosition="center"
+    bgAttachment={{ base: "scroll", md: "fixed" }}
+    bgBlendMode={{ base: "multiply, soft-light, normal", md: "multiply" }} // Multiple blend modes for mobile
+    bgRepeat={{ base: "repeat, repeat, no-repeat", md: "no-repeat" }}
+    bgSize={{ 
+        base: "200px 200px, 150px 150px, cover", // Different sizes for each texture
+        md: "cover" 
+    }}
+    bgPosition={{ 
+        base: "0 0, 50px 50px, center", // Offset patterns
+        md: "center" 
+    }}
     overflow="hidden"
     position="relative"
+         opacity={isVisible ? 1 : 0}
+            //transform={isVisible ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.98)'}
+          //  filter={isVisible ? 'blur(0px)' : 'blur(3px)'}
+           // transition="all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)" // SLOW: 1.2s smooth fade-in
+    // ADD: Enhanced backdrop filter
+    _before={{
+        content: '""',
+        position: "absolute",
+        inset: 0,
+        bgImage: "url('/textures/fabric-texture.png')", // Additional fabric overlay
+        bgSize: "300px 300px",
+        bgRepeat: "repeat",
+        opacity: { base: 0.15, md: 0.08 },
+        mixBlendMode: "multiply",
+        zIndex: -1,
+    }}
+    _after={{
+        content: '""',
+        position: "absolute", 
+        inset: 0,
+        bgImage: "url('/textures/vintage-paper.png')", // Vintage paper overlay
+        bgSize: "400px 400px",
+        bgRepeat: "repeat",
+        opacity: { base: 0.12, md: 0.05 },
+        mixBlendMode: "soft-light",
+        zIndex: -2,
+    }}
 >
 {/* Top-right Controls - Language Switch & Music Toggle - FIXED POSITIONING */}
 <Box
@@ -3296,7 +2912,7 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
   <Image
     src='/vectors/rootright.svg'
     alt="Left Root Flower"
-    height={{ base: "50vh", sm: "80vh", md: "100vh" }} // Progressive sizing: mobile -> tablet -> desktop
+    height={{ base: "-100vh", sm: "80vh", md: "100vh" }} // Progressive sizing: mobile -> tablet -> desktop
     width="auto"
     maxW="none"
     maxH="none"
@@ -3348,24 +2964,59 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
     }}
   />
 </Box>
+            
             {/* Full-screen Invitation Content */}
             <Box
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
                 textAlign="center"
-                px={{ base: 4, md: 8 }}
-                py={{ base: 6, md: 10 }}
-                // Apply premium glassmorphism to the main invitation content box
-                maxW={{ base: "95%", sm: "90%", md: "2xl" }} // Better mobile width constraint
+                px={{ base: 2, md: 8 }}
+                py={{ base: 2, md: 10 }}
+                maxW={{ base: "98%", sm: "95%", md: "2xl" }}
                 width="100%"
                 className="glass-card floating-particles-luxury khmer-border"
-                borderRadius={{ base: "xl", md: "2xl" }}
+                borderRadius={{ base: "lg", md: "2xl" }}
                 position="relative"
                 zIndex={2}
                 minHeight="auto"
+                // ENHANCED: Much more transparent with stronger blur
+                bg="rgba(255, 255, 255, 0.02)" // REDUCED: from 0.06 to 0.02 - much more transparent
+                backdropFilter="blur(30px) saturate(1.2) brightness(0.5)" // INCREASED: stronger blur
+                border="1px solid rgba(255, 255, 255, 0.04)" // REDUCED: more subtle border
+                boxShadow="0 8px 32px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(255, 255, 255, 0.02)" // REDUCED: softer shadows
+                mx="auto"
+                // ENHANCED: Even more subtle border effects
+                _before={{
+                    content: '""',
+                    position: "absolute",
+                    inset: "-2px",
+                    background: "linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.05))", // REDUCED opacity
+                    borderRadius: "inherit",
+                    filter: "blur(15px)", // INCREASED blur
+                    zIndex: -1,
+                    opacity: 0.3, // REDUCED opacity
+                }}
+                _after={{
+                    content: '""',
+                    position: "absolute",
+                    inset: "0px",
+                    borderRadius: "inherit", 
+                    boxShadow: "inset 0 1px 2px rgba(255, 255, 255, 0.05)", // REDUCED inner glow
+                    zIndex: -1,
+                    pointerEvents: "none",
+                }}
             >
-                
+                 {/* ADD: New animated wrapper for content only */}
+        <Box
+            w="100%"
+            opacity={isVisible ? 1 : 0}
+            transform={isVisible ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.98)'}
+            filter={isVisible ? 'blur(0px)' : 'blur(3px)'}
+            transition="all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+        >
+        </Box>
+        
     {/* Move these background elements to a lower z-index and ensure they don't interfere */}
     <Box position="absolute" inset={0} zIndex={-2} pointerEvents="none">
         <KhmerSacredGeometry />
@@ -3467,17 +3118,6 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                         transform: "translateZ(0)", // Force hardware acceleration
                         willChange: "transform", // Optimize for animations
                     }}
-                    _before={{
-                        content: '"✦"',
-                        position: "absolute",
-                        top: "-15px",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        fontSize: "1.2rem",
-                        color: "#FFD700",
-                        animation: `${goldPulse} 3s ease-in-out infinite`,
-                        zIndex: 1000, // Even higher than the heading
-                    }}
                 >
                     {content.inviteText}
                 </Heading>
@@ -3486,327 +3126,337 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                     <KhmerOrnamentalDivider />
                 </Box>
 
-                {/* Parents Section - Side by Side Layout */}
-                <Flex 
-                    direction={{ base: 'column', md: 'row' }} 
-                    justify="space-between" 
-                    width="100%" 
-                    gap={{ base: 6, md: 8 }} 
-                    mb={{ base: 6, md: 8 }}
-                    maxW={{ base: "100%", md: "4xl" }}
-                    px={{ base: 2, md: 0 }}
-                    className="animate-fade-in-up-delay-3"
+{/* Parents Section - Side by Side Layout */}
+<Flex 
+    direction="row" // Force horizontal layout on all screen sizes
+    justify="space-between" 
+    width="100%" 
+    gap={{ base: 2, md: 8 }} // Smaller gap on mobile
+    mb={{ base: 4, md: 8 }}
+    maxW={{ base: "100%", md: "4xl" }}
+    px={{ base: 1, md: 0 }}
+    className="animate-fade-in-up-delay-3"
+>    
+    {/* Groom's Parents - Left Column */}
+    <Box 
+        flex={1} 
+        textAlign="center" 
+        minW={0}
+        className="premium-card khmer-border"
+        p={{ base: 3, sm: 5, md: 6 }} // Increased mobile padding
+        borderRadius={{ base: "lg", md: "xl" }}
+        bg="rgba(255, 255, 255, 0.08)"
+        backdropFilter="blur(10px)"
+        position="relative"
+        mr={1}
+    >
+        <Heading 
+            as="h3" 
+            fontSize={{ base: 'xs', sm: 'xl', md: 'xl' }} // INCREASED from '2xs'
+            fontFamily={lang === 'kh' ? 'moul' : 'weddingFont'} 
+            color="brand.maroon" 
+            fontWeight="bold"
+            mb={{ base: 2, sm: 5, md: 4 }} // Increased spacing
+            px={0}
+            lineHeight={{ base: 2, md: 1.4 }}
+            noOfLines={2}
+        >
+            {lang === 'kh' ? 'មាតាបិតាកូនប្រុស' : "Groom's Parents"}
+        </Heading>
+        <VStack spacing={{ base: 1, sm: 2, md: 3 }} align="center"> // Increased spacing
+            {/* Groom's Father */}
+            <Box>
+                <Text 
+                    fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // INCREASED from '2xs'
+                    fontFamily="khmerSubheading" 
+                    color="brand.textPrimary"
+                    fontWeight="semibold"
+                    noOfLines={3}
+                    lineHeight={{ base: 2, md: 1.5 }} // Better line height
                 >
-                    {/* Groom's Parents - Left Column */}
-                    <Box 
-                        flex={1} 
-                        textAlign="center" 
-                        minW={0}
-                        className="premium-card khmer-border, fade-in-slow 1s ease-out forwards"
-                        animation="fade-in-slow 1s ease-out forwards"
-                        p={6}
-                        borderRadius="xl"
-                        bg="rgba(255, 255, 255, 0.08)"
-                        border="1px solid rgba(196, 166, 106, 0.2)"
-                        backdropFilter="blur(10px)"
-                        boxShadow="0 4px 20px rgba(196, 166, 106, 0.1)"
-                        position="relative"
+                    {formatName('លោក', 'Mr.', weddingInfo?.groomFatherName, weddingInfo, 'groomFather', lang)}
+                </Text>
+                {weddingInfo?.groomFatherSubtitle && (
+                    <Text 
+                        fontSize={{ base: '2xs', sm: 'xs', md: 'sm' }} // INCREASED
+                        fontFamily="khmerBody" 
+                        color="brand.mediumBrown"
+                        fontStyle="italic"
+                        noOfLines={2}
+                        lineHeight={1.2}
                     >
-                        <Heading 
-                            as="h3" 
-                            fontSize={{ base: 'md', sm: 'lg', md: 'xl' }} 
-                            fontFamily={lang === 'kh' ? 'moul' : 'weddingFont'} 
-                            color="brand.maroon" 
-                            fontWeight="bold"
-                            mb={{ base: 3, md: 4 }}
-                            px={1} // Padding for mobile
-                        >
-                            {lang === 'kh' ? 'មាតាបិតាកូនប្រុស' : "Groom's Parents"}
-                        </Heading>
-                        <VStack spacing={{ base: 2, md: 3 }} align="center">
-                            {/* Groom's Father */}
-                            <Box>
-                                <Text 
-                                    fontSize={{ base: 'sm', sm: 'md', md: 'lg' }} 
-                                    fontFamily="khmerSubheading" 
-                                    color="brand.textPrimary"
-                                    fontWeight="semibold"
-                                    noOfLines={2} // Prevent overflow on mobile
-                                >
-                                    {formatName('លោក', 'Mr.', weddingInfo?.groomFatherName, weddingInfo, 'groomFather', lang)}
-                                </Text>
-                                {weddingInfo?.groomFatherSubtitle && (
-                                    <Text 
-                                        fontSize={{ base: 'xs', md: 'sm' }} 
-                                        fontFamily="khmerBody" 
-                                        color="brand.mediumBrown"
-                                        fontStyle="italic"
-                                        noOfLines={2}
-                                    >
-                                        {weddingInfo.groomFatherSubtitle}
-                                    </Text>
-                                )}
-                            </Box>
-                            {/* Groom's Mother */}
-                            <Box>
-                                <Text 
-                                    fontSize={{ base: 'sm', sm: 'md', md: 'lg' }} 
-                                    fontFamily="khmerSubheading" 
-                                    color="brand.textPrimary"
-                                    fontWeight="semibold"
-                                    noOfLines={2}
-                                >
-                                    {formatName('លោកស្រី', 'Mrs.', weddingInfo?.groomMotherName, weddingInfo, 'groomMother', lang)}
-                                </Text>
-                                {weddingInfo?.groomMotherSubtitle && (
-                                    <Text 
-                                        fontSize={{ base: 'xs', md: 'sm' }} 
-                                        fontFamily="khmerBody" 
-                                        color="brand.mediumBrown"
-                                        fontStyle="italic"
-                                        noOfLines={2}
-                                    >
-                                        {weddingInfo.groomMotherSubtitle}
-                                    </Text>
-                                )}
-                            </Box>
-                        </VStack>
-                    </Box>
-
-                    {/* Bride's Parents - Right Column */}
-                    <Box 
-                        flex={1} 
-                        textAlign="center" 
-                        minW={0}
-                        className="premium-card khmer-border, fade-in-slow 1s ease-out forwards"
-                        animation="fade-in-slow 1s ease-out forwards"
-                        p={6}
-                        borderRadius="xl"
-                        bg="rgba(255, 255, 255, 0.08)"
-                        border="1px solid rgba(196, 166, 106, 0.2)"
-                        backdropFilter="blur(10px)"
-                        boxShadow="0 4px 20px rgba(196, 166, 106, 0.1)"
-                        position="relative"
+                        {weddingInfo.groomFatherSubtitle}
+                    </Text>
+                )}
+            </Box>
+            {/* Groom's Mother */}
+            <Box>
+                <Text 
+                    fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // INCREASED from '2xs'
+                    fontFamily="khmerSubheading" 
+                    color="brand.textPrimary"
+                    fontWeight="semibold"
+                    noOfLines={3}
+                    lineHeight={{ base: 2, md: 1.5 }}
+                >
+                    {formatName('លោកស្រី', 'Mrs.', weddingInfo?.groomMotherName, weddingInfo, 'groomMother', lang)}
+                </Text>
+                {weddingInfo?.groomMotherSubtitle && (
+                    <Text 
+                        fontSize={{ base: '2xs', sm: 'xs', md: 'sm' }} // INCREASED
+                        fontFamily="khmerBody" 
+                        color="brand.mediumBrown"
+                        fontStyle="italic"
+                        noOfLines={2}
+                        lineHeight={1.2}
                     >
-                        <Heading 
-                            as="h3" 
-                            fontSize={{ base: 'md', sm: 'lg', md: 'xl' }} 
-                            fontFamily={lang === 'kh' ? 'moul' : 'weddingFont'} 
-                            color="brand.maroon" 
-                            fontWeight="bold"
-                            mb={{ base: 3, md: 4 }}
-                            px={1}
-                        >
-                            {lang === 'kh' ? 'មាតាបិតាកូនស្រី' : "Bride's Parents"}
+                        {weddingInfo.groomMotherSubtitle}
+                    </Text>
+                )}
+            </Box>
+        </VStack>
+    </Box>
 
-                        </Heading>
-                        <VStack spacing={{ base: 2, md: 3 }} align="center">
-                            {/* Bride's Father */}
-                            <Box>
-                                <Text 
-                                    fontSize={{ base: 'sm', sm: 'md', md: 'lg' }} 
-                                    fontFamily="khmerSubheading" 
-                                    color="brand.textPrimary"
-                                    fontWeight="semibold"
-                                    noOfLines={2}
-                                >
-                                    {formatName('លោក', 'Mr.', weddingInfo?.brideFatherName, weddingInfo, 'brideFather', lang)}
-                                </Text>
-                                {weddingInfo?.brideFatherSubtitle && (
-                                    <Text 
-                                        fontSize={{ base: 'xs', md: 'sm' }} 
-                                        fontFamily="khmerBody" 
-                                        color="brand.mediumBrown"
-                                        fontStyle="italic"
-                                        noOfLines={2}
-                                    >
-                                        {weddingInfo.brideFatherSubtitle}
-                                    </Text>
-                                )}
-                            </Box>
-                            {/* Bride's Mother */}
-                            <Box>
-                                <Text 
-                                    fontSize={{ base: 'sm', sm: 'md', md: 'lg' }} 
-                                    fontFamily="khmerSubheading" 
-                                    color="brand.textPrimary"
-                                    fontWeight="semibold"
-                                    noOfLines={2}
-                                >
-                                    {formatName('លោកស្រី', 'Mrs.', weddingInfo?.brideMotherName, weddingInfo, 'brideMother', lang)}
-                                </Text>
-                                {weddingInfo?.brideMotherSubtitle && (
-                                    <Text 
-                                        fontSize={{ base: 'xs', md: 'sm' }} 
-                                        fontFamily="khmerBody" 
-                                        color="brand.mediumBrown"
-                                        fontStyle="italic"
-                                        noOfLines={2}
-                                    >
-                                        {weddingInfo.brideMotherSubtitle}
-                                    </Text>
-                                )}
-                            </Box>
-                        </VStack>
-                    </Box>
-                </Flex>
-
+ {/* Bride's Parents - Right Column */}
+<Box 
+    flex={1} 
+    textAlign="center" 
+    minW={0}
+    className="premium-card khmer-border"
+    p={{ base: 3, sm: 4, md: 6 }} // Same increased mobile padding
+    borderRadius={{ base: "lg", md: "xl" }}
+    bg="rgba(255, 255, 255, 0.08)"
+    backdropFilter="blur(10px)"
+    position="relative"
+    ml={1}
+>
+    <Heading 
+        as="h3" 
+        fontSize={{ base: 'xs', sm: 'xl', md: 'xl' }} // SAME AS GROOM'S PARENTS
+        fontFamily={lang === 'kh' ? 'moul' : 'weddingFont'} 
+        color="brand.maroon" 
+        fontWeight="bold"
+        mb={{ base: 2, sm: 5, md: 4 }} // Same increased spacing
+        px={0}
+        lineHeight={{ base: 2.1, md: 1.4 }}
+        noOfLines={2}
+    >
+        {lang === 'kh' ? 'មាតាបិតាកូនស្រី' : "Bride's Parents"}
+    </Heading>
+    <VStack spacing={{ base: 1, sm: 2, md: 3 }} align="center"> {/* Same increased spacing */}
+        {/* Bride's Father */}
+        <Box>
+            <Text 
+                fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // SAME AS GROOM'S PARENTS
+                fontFamily="khmerSubheading" 
+                color="brand.textPrimary"
+                fontWeight="semibold"
+                noOfLines={3}
+                lineHeight={{ base: 2, md: 1.5 }} // Same better line height
+            >
+                {formatName('លោក', 'Mr.', weddingInfo?.brideFatherName, weddingInfo, 'brideFather', lang)}
+            </Text>
+            {weddingInfo?.brideFatherSubtitle && (
+                <Text 
+                    fontSize={{ base: '2xs', sm: 'xs', md: 'sm' }} // SAME AS GROOM'S PARENTS
+                    fontFamily="khmerBody" 
+                    color="brand.mediumBrown"
+                    fontStyle="italic"
+                    noOfLines={2}
+                    lineHeight={1.2}
+                >
+                    {weddingInfo.brideFatherSubtitle}
+                </Text>
+            )}
+        </Box>
+        {/* Bride's Mother */}
+        <Box>
+            <Text 
+                fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // SAME AS GROOM'S PARENTS
+                fontFamily="khmerSubheading" 
+                color="brand.textPrimary"
+                fontWeight="semibold"
+                noOfLines={3}
+                lineHeight={{ base: 2, md: 1.5 }} // Same line height
+            >
+                {formatName('លោកស្រី', 'Mrs.', weddingInfo?.brideMotherName, weddingInfo, 'brideMother', lang)}
+            </Text>
+            {weddingInfo?.brideMotherSubtitle && (
+                <Text 
+                    fontSize={{ base: '2xs', sm: 'xs', md: 'sm' }} // SAME AS GROOM'S PARENTS
+                    fontFamily="khmerBody" 
+                    color="brand.mediumBrown"
+                    fontStyle="italic"
+                    noOfLines={2}
+                    lineHeight={1.2}
+                >
+                    {weddingInfo.brideMotherSubtitle}
+                </Text>
+            )}
+        </Box>
+    </VStack>
+</Box>
+</Flex>
+                
                 {/* Introduction Paragraph */}
                 <Text
                     fontFamily="khmerBody"
-                    fontSize={{ base: 'sm', sm: 'md', md: 'lg' }}
+                    fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // Much smaller on mobile
                     color="brand.textPrimary"
-                    lineHeight={{ base: '1.6', md: '1.8' }}
-                    mb={{ base: 6, md: 8 }}
+                    lineHeight={{ base: '1.4', md: '1.8' }} // Tighter on mobile
+                    mb={{ base: 3, md: 8 }} // Reduced mobile margin
                     textAlign="center"
                     maxW={{ base: "100%", md: "4xl" }}
-                    px={{ base: 4, md: 6 }}
+                    px={{ base: 2, md: 6 }} // Reduced mobile padding
+                    wordBreak="break-word" // Allow text wrapping
+                    whiteSpace="normal" // Ensure text wraps
                 >
                     {lang === 'kh' ? 
                      `យើងខ្ញុំ ${formatName('លោកស្រី', 'Mrs.', weddingInfo?.groomMotherName, weddingInfo, 'groomMother', 'kh')} និង ${formatName('លោក', 'Mr.', weddingInfo?.groomFatherName, weddingInfo, 'groomFather', 'kh')} មានកិត្តិយសសូមគោរពអញ្ជើញ លោក លោកស្រី និងគ្រួសារ អញ្ជើញចូលរួមពិធីមង្គលការរបស់កូនយើង ដែលនឹងត្រូវប្រព្រឹត្តទៅនៅ ${weddingInfo?.date ? toKhmerNumerals(weddingInfo.date) : 'TBD'} ${weddingInfo?.time ? formatKhmerTime(weddingInfo.time) : 'TBD'} ។` :
                      `We, ${formatName('លោកស្រី', 'Mrs.', weddingInfo?.groomMotherName, weddingInfo, 'groomMother', 'en')} and ${formatName('លោក', 'Mr.', weddingInfo?.groomFatherName, weddingInfo, 'groomFather', 'en')}, have the honor to cordially invite you and your family to attend the wedding ceremony of our children, which will be held on ${weddingInfo?.date || 'TBD'} at ${weddingInfo?.time || 'TBD'}.`}
                 </Text>
-
-                <KhmerOrnamentalDivider />
-
-                {/* Bride and Groom Names Section */}
-                <Flex 
-                    direction={{ base: 'column', md: 'row' }} 
-                    justify="space-around" 
-                    width="100%" 
-                    gap={{ base: 4, md: 6 }} 
-                    mb={{ base: 6, md: 8 }}
-                    maxW={{ base: "100%", md: "3xl" }}
-                    px={{ base: 2, md: 0 }}
-                >
-                    {/* Groom */}
-                    <VStack spacing={2} flex={1} minW={0}>
-                        <Text
-                            fontFamily="khmerSubheading"
-                            fontSize={{ base: 'sm', sm: 'md', md: 'lg' }}
-                            fontWeight="bold"
-                            color="brand.mediumBrown"
-                        >
-                            {lang === 'kh' ? 'កូនប្រុសឈ្មោះ៖' : 'Groom:'}
-                        </Text>
-<Text
-    fontFamily={
-        // Detect by lang code (simplest)
-        lang === 'kh'
-            ? 'khmerSubheading'
-            : 'weddingFont'
-        // OR auto-detect script (for mixed/auto input):
-        // /[\u1780-\u17FF]/.test(name) ? 'khmerSubheading' : 'weddingFont'
-    }
-    fontSize={{ base: 'lg', sm: 'xl', md: '2xl', lg: '3xl' }}
-    fontWeight="bold"
-    color="#b18635"
-    textAlign="center"
-    letterSpacing="0.05em"
-    position="relative"
-    sx={{
-        background: "linear-gradient(90deg, #fff9e1 0%, #FFD700 50%, #f7cf41 100%)",
-        backgroundClip: "text",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        textShadow: `
-            0 1px 1px #b79c32,
-            0 2px 5px rgba(255,215,0,0.3),
-            0 0.5px 0px #fff
-        `,
-        filter: "none"
-    }}
-    _before={{
-        content: '"◆"',
-        position: 'absolute',
-        top: '-12px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        fontSize: '0.9rem',
-        color: '#FFE066',
-        textShadow: '0 0 3px #FFD700',
-        opacity: 0.75,
-        animation: `${sparkle} 2.5s ease-in-out infinite`
-    }}
+                
+{/* Bride and Groom Names Section */}
+<Flex 
+    direction="row" // Force horizontal layout on all screen sizes
+    justify="space-around" 
+    width="100%" 
+    gap={{ base: 1, sm: 2, md: 6 }}
+    mb={{ base: 3, md: 8 }}
+    maxW={{ base: "100%", md: "3xl" }}
+    px={{ base: 0, md: 0 }}
 >
-    {formatName('', '', weddingInfo?.groomName, weddingInfo, 'groomName', lang)}
-</Text>
-                    </VStack>
-
-                    {/* Bride */}
-                    <VStack spacing={2} flex={1} minW={0}>
-                        <Text
-                            fontFamily="khmerSubheading"
-                            fontSize={{ base: 'sm', sm: 'md', md: 'lg' }}
-                            fontWeight="bold"
-                            color="brand.mediumBrown"
-                        >
-                            {lang === 'kh' ? 'កូនស្រីនាម៖' : 'Bride:'}
-                        </Text>
-<Text
-    fontFamily={
-        // Detect by lang code (simplest)
-        lang === 'kh'
-            ? 'khmerSubheading'
-            : 'weddingFont'
-        // OR auto-detect script (for mixed/auto input):
-        // /[\u1780-\u17FF]/.test(name) ? 'khmerSubheading' : 'weddingFont'
-    }
-    fontSize={{ base: 'lg', sm: 'xl', md: '2xl', lg: '3xl' }}
-    fontWeight="bold"
-    color="#b18635"
-    textAlign="center"
-    letterSpacing="0.05em"
-    position="relative"
-    sx={{
-        background: "linear-gradient(90deg, #fff9e1 0%, #FFD700 50%, #f7cf41 100%)",
-        backgroundClip: "text",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        textShadow: `
-            0 1px 1px #b79c32,
-            0 2px 5px rgba(255,215,0,0.3),
-            0 0.5px 0px #fff
-        `,
-        filter: "none"
-    }}
-    _before={{
-        content: '"◆"',
-        position: 'absolute',
-        top: '-12px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        fontSize: '0.9rem',
-        color: '#FFE066',
-        textShadow: '0 0 3px #FFD700',
-        opacity: 0.75,
-        animation: `${sparkle} 2.5s ease-in-out infinite`
-    }}
->
-                            {formatName('', '', weddingInfo?.brideName, weddingInfo, 'brideName', lang)}
-                        </Text>
-                    </VStack>
-                </Flex>
-
+    {/* Groom */}
+    <VStack spacing={{ base: 1, sm: 2, md: 2 }} flex={1} minW={0}>
+        <Text
+            fontFamily="khmerSubheading"
+            fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // INCREASED from '3xs'
+            fontWeight="bold"
+            color="brand.mediumBrown"
+            lineHeight={2}
+            noOfLines={1}
+        >
+            {lang === 'kh' ? 'កូនប្រុសឈ្មោះ៖' : 'Groom:'}
+        </Text>
+        <Text
+            fontFamily={lang === 'kh' ? 'khmerSubheading' : 'weddingFont'}
+            fontSize={{ base: 'sm', sm: 'xl', md: '2xl', lg: '3xl' }} // MUCH BIGGER on mobile
+            fontWeight="bold"
+            color="#b18635"
+            textAlign="center"
+            letterSpacing="0.05em"
+            position="relative"
+            lineHeight={{ base: 1.9, md: 1.4 }}
+            noOfLines={2}
+            sx={{
+                background: "linear-gradient(90deg, #fff9e1 0%, #FFD700 50%, #f7cf41 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                textShadow: `
+                    0 1px 1px #b79c32,
+                    0 2px 5px rgba(255,215,0,0.3),
+                    0 0.5px 0px #fff
+                `,
+                filter: "none"
+            }}
+            _before={{
+                content: '"◆"',
+                position: 'absolute',
+                top: { base: '-8px', md: '-12px' }, // Adjusted for bigger text
+                left: '50%',
+                transform: 'translateX(-50%)',
+                fontSize: { base: '0.6rem', md: '0.9rem' }, // Bigger diamond
+                color: '#FFE066',
+                textShadow: '0 0 3px #FFD700',
+                opacity: 0.75,
+                animation: `${sparkle} 2.5s ease-in-out infinite`
+            }}
+        >
+            {formatName('', '', weddingInfo?.groomName, weddingInfo, 'groomName', lang)}
+        </Text>
+    </VStack>
+    
+{/* Bride */}
+<VStack spacing={{ base: 0.5, sm: 1, md: 2 }} flex={1} minW={0}>
+    <Text
+        fontFamily="khmerSubheading"
+        fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // SAME AS GROOM - increased from '3xs'
+        fontWeight="bold"
+        color="brand.mediumBrown"
+        lineHeight={2}
+        noOfLines={1}
+    >
+        {lang === 'kh' ? 'កូនស្រីនាម៖' : 'Bride:'}
+    </Text>
+    <Text
+        fontFamily={lang === 'kh' ? 'khmerSubheading' : 'weddingFont'}
+        fontSize={{ base: 'sm', sm: 'xl', md: '2xl', lg: '3xl' }} // SAME AS GROOM - much bigger on mobile
+        fontWeight="bold"
+        color="#b18635"
+        textAlign="center"
+        letterSpacing="0.05em"
+        position="relative"
+        lineHeight={{ base: 2, md: 1.4 }}
+        noOfLines={2}
+        sx={{
+            background: "linear-gradient(90deg, #fff9e1 0%, #FFD700 50%, #f7cf41 100%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: `
+                0 1px 1px #b79c32,
+                0 2px 5px rgba(255,215,0,0.3),
+                0 0.5px 0px #fff
+            `,
+            filter: "none"
+        }}
+        _before={{
+            content: '"◆"',
+            position: 'absolute',
+            top: { base: '-8px', md: '-12px' }, // Adjusted for bigger text
+            left: '50%',
+            transform: 'translateX(-50%)',
+            fontSize: { base: '0.6rem', md: '0.9rem' }, // Bigger diamond
+            color: '#FFE066',
+            textShadow: '0 0 3px #FFD700',
+            opacity: 0.75,
+            animation: `${sparkle} 2.5s ease-in-out infinite`
+        }}
+    >
+        {formatName('', '', weddingInfo?.brideName, weddingInfo, 'brideName', lang)}
+    </Text>
+</VStack>
+</Flex>
+                
                 {/* Ceremony Location and Time */}
-                <VStack spacing={{ base: 3, md: 4 }} mb={{ base: 6, md: 8 }} maxW={{ base: "100%", md: "3xl" }} textAlign="center" px={{ base: 4, md: 0 }}>
+                <VStack 
+                    spacing={{ base: 2, md: 4 }} // Smaller mobile spacing
+                    mb={{ base: 3, md: 8 }} // Reduced mobile margin
+                    maxW={{ base: "100%", md: "3xl" }} 
+                    textAlign="center" 
+                    px={{ base: 2, md: 0 }} // Minimal mobile padding
+                >
                     <Text
                         fontFamily="khmerSubheading"
-                        fontSize={{ base: 'md', sm: 'lg', md: 'xl' }}
+                        fontSize={{ base: 'sm', sm: 'md', md: 'xl' }} // Smaller on mobile
                         fontWeight="semibold"
                         color="brand.maroon"
+                        lineHeight={1.3}
                     >
                         {lang === 'kh' ? 'ពិធីសូត្រមន្តនឹងប្រព្រឹត្តនៅ' : 'The ceremony will be held at'}
                     </Text>
                     
                     <Text
                         fontFamily="khmerBody"
-                        fontSize={{ base: 'sm', sm: 'md', md: 'lg' }}
+                        fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }} // Much smaller on mobile
                         color="brand.textPrimary"
-                        lineHeight="1.6"
+                        lineHeight={{ base: '1.4', md: '1.6' }}
                         fontWeight="medium"
-                        noOfLines={3}
+                        noOfLines={{ base: 4, md: 3 }} // Allow more lines on mobile
                         position="relative"
+                        wordBreak="break-word"
+                        whiteSpace="normal"
                     >
                         {isTranslating ? (
                             <Flex align="center" justify="center" gap={2}>
@@ -3826,21 +3476,23 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                     
                     <Text
                         fontFamily="khmerSubheading"
-                        fontSize={{ base: 'md', sm: 'lg', md: 'xl' }}
+                        fontSize={{ base: 'sm', sm: 'md', md: 'xl' }}
                         fontWeight="bold"
                         color="brand.gold"
+                        lineHeight={1.3}
                     >
                         {formatElegantDate(weddingInfo?.date || '', lang)}
                     </Text>
-
-                        <Text
-                            fontFamily="khmerBody"
-                            fontSize={{ base: 'sm', sm: 'md', md: 'lg' }}
-                            color="brand.maroon"
-                            fontWeight="semibold"
-                        >
-                            {formatProfessionalTime(weddingInfo?.time || '', lang)}
-                        </Text>
+                
+                    <Text
+                        fontFamily="khmerBody"
+                        fontSize={{ base: 'xs', sm: 'sm', md: 'lg' }}
+                        color="brand.maroon"
+                        fontWeight="semibold"
+                        lineHeight={1.3}
+                    >
+                        {formatProfessionalTime(weddingInfo?.time || '', lang)}
+                    </Text>
                 </VStack>
 
                 <KhmerOrnamentalDivider />
@@ -3950,32 +3602,32 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                                         py={{ base: 6, md: 8 }}
                                         position="relative"
                                         overflow="hidden"
-                                        boxShadow="0 15px 40px rgba(212, 175, 55, 0.8), inset 0 2px 6px rgba(255, 255, 255, 0.4), 0 0 50px rgba(212, 175, 55, 0.6)"
+                                       // boxShadow="0 15px 40px rgba(212, 175, 55, 0.8), inset 0 2px 6px rgba(255, 255, 255, 0.4), 0 0 50px rgba(212, 175, 55, 0.6)"
                                         border="3px solid #D4AF37"
-                                        textShadow="0 2px 4px rgba(0,0,0,0.3)"
-                                        _before={{
-                                            content: '""',
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: '-100%',
-                                            width: '100%',
-                                            height: '100%',
-                                            background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent)',
-                                            transition: 'left 0.6s',
-                                        }}
-                                        _after={{
-                                            content: '""',
-                                            position: 'absolute',
-                                            inset: '-4px',
-                                            background: 'linear-gradient(45deg, #FFD700, #F4E970, #D4AF37, #FFD700)',
-                                            borderRadius: 'full',
-                                            zIndex: -1,
-                                            opacity: 0,
-                                            transition: 'opacity 0.3s ease',
-                                        }}
+                                        //textShadow="0 2px 4px rgba(0,0,0,0.3)"
+                                       // _before={{
+                                          //  content: '""',
+                                          //  position: 'absolute',
+                                           // top: 0,
+                                          //  left: '-100%',
+                                           // width: '100%',
+                                           // height: '100%',
+                                          //  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent)',
+                                           // transition: 'left 0.6s',
+                                      //  }}
+                                     //   _after={{
+                                       //     content: '""',
+                                        //    position: 'absolute',
+                                        //</Box>    inset: '-4px',
+                                       //     background: 'linear-gradient(45deg, #FFD700, #F4E970, #D4AF37, #FFD700)',
+                                       //</Box>     borderRadius: 'full',
+                                       //     zIndex: -1,
+                                        //    opacity: 0,
+                                      // </Box>      transition: 'opacity 0.3s ease',
+                                     //</>   }}
                                         _hover={{
                                             bg: "linear-gradient(135deg, #F4E970, #FFD700, #D4AF37, #B8860B)",
-                                            boxShadow: "0 20px 50px rgba(212, 175, 55, 0.9), inset 0 3px 8px rgba(255, 255, 255, 0.5), 0 0 60px rgba(212, 175, 55, 0.8)",
+                                           // boxShadow: "0 20px 50px rgba(212, 175, 55, 0.9), inset 0 3px 8px rgba(255, 255, 255, 0.5), 0 0 60px rgba(212, 175, 55, 0.8)",
                                             transform: "translateY(-5px) scale(1.08)",
                                             _before: {
                                                 left: '100%',
@@ -3988,7 +3640,7 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                                             transform: "translateY(-2px) scale(1.05)",
                                         }}
                                         transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-                                        animation={`${pulseGold} 2s ease-in-out infinite`}
+                                    //   animation={`${pulseGold} ${OptimizedFadeInUp} 2s ease-in-out infinite`}
                                     >
                                         <Text
                                             fontSize="inherit"
@@ -4005,7 +3657,7 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                                         fontFamily="khmerBody" 
                                         color="brand.textPrimary" 
                                         fontSize={{ base: 'sm', md: 'md' }} 
-                                        fontWeight="medium"
+                                        fontWeight="bold"
                                         mb={3}
                                         textAlign="center"
                                         opacity={0.8}
@@ -4317,7 +3969,7 @@ const InvitationScreen: React.FC<InvitationScreenProps> = ({ guestName, lang, se
                             right: 0,
                             height: '4px',
                             background: 'linear-gradient(90deg, transparent, brand.gold, transparent)',
-                            animation: `${gradientShift} 4s ease-in-out infinite`,
+                            animation: `${gradientShift} ${OptimizedFadeInUp} 4s ease-in-out infinite`,
                         }}
                     >
                         {/* Date Header */}
@@ -4611,7 +4263,7 @@ END:VCALENDAR`}
                         {/* Wedding Countdown */}
                         {weddingInfo?.date && (
                             <Box mt={8}>
-                                <CountdownTimer targetDate={weddingInfo.date} lang={lang} />
+                                <LazyCountdownTimer targetDate={weddingInfo.date} lang={lang} />
                             </Box>
                         )}
 
@@ -4648,7 +4300,7 @@ END:VCALENDAR`}
                                     >
                                         {lang === 'kh' ? 'រាប់ថ្ងៃរហូតដល់ពិធីមង្គលការ' : 'Countdown until the ceremony'}
                                     </Text>
-                                    <CountdownTimer targetDate={weddingInfo?.date || ''} lang={lang} />
+                                    <LazyCountdownTimer targetDate={weddingInfo?.date || ''} lang={lang} />
                                 </Box>
                             </Box>
                         )}
@@ -4676,7 +4328,7 @@ END:VCALENDAR`}
                         width: '100%',
                         height: '100%',
                         background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
-                        animation: `${shimmer} 5s ease-in-out infinite`,
+                        animation: `${shimmer}  5s ease-in-out infinite`,
                     }}
                 >
                     <VStack spacing={4}>
@@ -4891,7 +4543,7 @@ END:VCALENDAR`}
                 </Box>
             </Box>
 
-            {showRSVP && <RSVPForm onClose={() => setShowRSVP(false)} lang={lang} guestRef={guestRef} />}
+            {showRSVP && <LazyRSVPForm onClose={() => setShowRSVP(false)} lang={lang} guestRef={guestRef} />}
         </Center>
     );
 };
