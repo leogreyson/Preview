@@ -128,7 +128,7 @@ export default function Home() {
       h="100%"
       objectFit="cover"
       borderRadius="full" // for perfect circle crop
-      fallbackSrc="/next.svg"
+      fallbackSrc="/astra.png"
       filter="drop-shadow(0 4px 20px rgba(196, 166, 106, 0.3))"
       // Optionally: remove "maxW" and "height" props!
     />
