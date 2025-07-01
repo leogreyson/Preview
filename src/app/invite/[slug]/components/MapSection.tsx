@@ -65,7 +65,7 @@ const MapSection: React.FC<MapSectionProps> = ({ venueMapLink, venue, lang }) =>
   return (
     <Box ref={ref} w="100%" maxW={{ base: "95%", md: "600px" }} mx="auto">
       <Text
-        fontFamily="khmerSubheading"
+        fontFamily="battambang"
         fontSize={{ base: 'lg', md: 'xl' }}
         fontWeight="bold"
         color="brand.gold"
@@ -162,7 +162,7 @@ const MapSection: React.FC<MapSectionProps> = ({ venueMapLink, venue, lang }) =>
             boxShadow: '0 8px 25px rgba(196, 166, 106, 0.4)',
           }}
           transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-          fontFamily="khmerBody"
+          fontFamily="battambang"
           fontWeight="bold"
           borderRadius="full"
           px={6}
@@ -177,19 +177,19 @@ const MapSection: React.FC<MapSectionProps> = ({ venueMapLink, venue, lang }) =>
           target="_blank"
           rel="noopener noreferrer"
           size={{ base: "sm", md: "md" }}
-          leftIcon={<span style={{ fontSize: '16px' }}>🧭</span>}
-          bg="brand.mediumBrown"
-          color="white"
+          leftIcon={<span style={{ fontSize: '16px' }}>🗺️</span>}
+          bg="white"
+          color="brand.maroon"
           border="2px solid"
-          borderColor="brand.mediumBrown"
+          borderColor="brand.gold"
           _hover={{
-            bg: 'brand.darkGold',
-            borderColor: 'brand.darkGold',
+            bg: 'brand.gold',
+            color: 'white',
             transform: 'translateY(-2px)',
-            boxShadow: '0 8px 25px rgba(124, 107, 80, 0.4)'
+            boxShadow: '0 8px 25px rgba(196, 166, 106, 0.4)',
           }}
           transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-          fontFamily="khmerBody"
+          fontFamily="battambang"
           fontWeight="bold"
           borderRadius="full"
           px={6}
