@@ -1,21 +1,21 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Box,
   Button,
   Center,
+  Container,
+  VStack,
   Heading,
   Text,
-  VStack,
-  Container,
   Image,
   Grid,
   GridItem,
   Badge,
-} from '@chakra-ui/react';
-import { keyframes } from '@emotion/react';
+} from '@chakra-ui/react'
+import { keyframes } from '@emotion/react'
 
 // Modern animations
 const floatAnimation = keyframes`
@@ -389,7 +389,7 @@ export default function Home() {
             >
               {/* Login Link */}
                 <Text fontSize="lg" color="slate.600" fontWeight="400">
-                  Don't have an account?{' '}
+                  Don&apos;t have an account?{' '}
                   <Button
                     variant="link"
                     color="blue.600"
@@ -442,7 +442,7 @@ export default function Home() {
                       transform: "translateY(-2px)",
                       boxShadow: "0 15px 30px -8px rgba(139, 92, 246, 0.4)",
                     }}
-                    onClick={() => router.push('/invite/nuid19')}
+                    onClick={() => router.push('/invite/kyk1h7')}
                     leftIcon={<span style={{ fontSize: '20px' }}>📮</span>}
                   >
                     View Demo Invitation
