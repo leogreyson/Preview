@@ -2,7 +2,7 @@
 
 /* AKbalthom Freehand */
 @font-face {
-  font-family: 'AKbalthom Freehand';
+  font-family: 'AKbalthom';
   src: url('/fonts/AKbalthomFreehand.woff2') format('woff2'),
        url('/fonts/AKbalthomFreehand.woff') format('woff');
   font-weight: normal;
@@ -191,6 +191,26 @@
   font-display: swap;
 }
 
+/* M2 */
+@font-face {
+  font-family: 'TrajanPro';
+  src: url('/fonts/TrajanPro-Regular.woff2') format('woff2'),
+       url('/fonts/TrajanPro-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* M2 */
+@font-face {
+  font-family: 'TrajanPro-Bold';
+  src: url('/fonts/TrajanPro-Bold.woff2') format('woff2'),
+       url('/fonts/TrajanPro-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -211,7 +231,20 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background); /* fallback color */
+  background-image: url('/vectors/bggreen.jpg'), url('/textures/cartographer.png');
+  background-repeat: no-repeat, repeat;
+  background-size: cover, auto;
+  background-position: center center, top left;
   color: var(--foreground);
   font-family: 'Battambang', 'Noto Sans Khmer', 'Hanuman', 'Moul', Arial, Helvetica, sans-serif;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 10%, rgba(0,0,0,0.10) 100%);
 }
