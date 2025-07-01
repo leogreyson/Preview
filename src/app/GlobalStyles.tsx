@@ -44,16 +44,17 @@ export default function GlobalStyles() {
         margin: 0;
         padding: 0;
       }
-        body {
-            fontFamily: 'Noto Sans Khmer', 'Roboto', 'Arial', sans-serif;
-            backgroundColor: 'brand.ivory';
-            backgroundImage: 'url(https://www.transparenttextures.com/patterns/stucco.png)';
-            backgroundRepeat: 'repeat';
-            backgroundSize: 'auto';
-            backgroundAttachment: 'fixed'; /* Add this to prevent background scrolling */
-            color: 'brand.textPrimary';
-            overflowX: 'hidden'; /* Prevent horizontal scroll on body */
-        }
+  body {
+    font-family: 'Noto Sans Khmer', 'Roboto', 'Arial', sans-serif;
+    background-color: #f5f3ed;
+    background-image: url('/vectors/bggreen.jpg'), url('https://www.transparenttextures.com/patterns/stucco.png');
+    background-repeat: no-repeat, repeat;
+    background-size: cover, auto;
+    background-position: center center, top left;
+    background-attachment: fixed;
+    color: #5c2c2c;
+    overflow-x: hidden;
+  }
 
       /* Animation keyframes */
       @keyframes gold-sparkle-text {
