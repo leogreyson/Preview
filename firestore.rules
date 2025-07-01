@@ -1,20 +1,29 @@
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Allow public read access to invites collection
+    match /invites/{inviteId} {
+      allow read: if true; // Public read access for wedding invitations
+      allow write: if request.auth != null; // Authenticated users can update RSVPs
+    }
+    
     // Admin only: full access to users collection
-    match /users/{userId} {
-      allow create: if request.auth != null && request.auth.token.admin == true;
-      allow update, delete: if request.auth != null && request.auth.token.admin == true;
-      // Clients may read/write only their own user document
-      allow read: if request.auth != null && request.auth.uid == userId;
+    match /Users/{userId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Guest subcollection under Users - ALLOW PUBLIC UPDATES FOR RSVP
+    match /Users/{userId}/Guests/{guestId} {
+      allow read: if true; // Allow reading guest data
+      allow update: if true; // Allow RSVP updates without authentication
+      allow create: if request.auth != null; // Only authenticated users can create
+      allow delete: if request.auth != null; // Only authenticated users can delete
     }
 
     // Wedding RSVPs: public documents under a client's 'wedding_rsvps'
     match /artifacts/{projectId}/public/data/wedding_rsvps/{rsvpId} {
-      // Anyone authenticated may create an RSVP
-      allow create: if request.auth != null;
-      // Only the client/admin may read RSVP counts
-      allow read: if request.auth != null && (request.auth.token.admin == true || request.auth.token.clientId == projectId);
-      allow update, delete: if false; // No updates or deletes once created
+      allow create: if true; // Allow anyone to create RSVPs
+      allow read: if true;   // Allow reading for count display
+      allow update, delete: if false;
     }
 
     // Deny all other access by default
